@@ -11,7 +11,6 @@ public class BookListTest {
     private static String unsuccessfulCheckOutMessage = "That book is not available.\n";
     private static String successfulReturnMessage = "Thank you for returning the book.\n";
     private static String unsuccessfulReturnMessage = "That is not a valid book to return.\n";
-    private static String emptyBookListMessage = "There are no available books right now, please try again later..\n";
 
     private Book testBook1 = new Book("Lord of the Rings", "ME", 1994, false);
     private Book testBook2 = new Book("Hang of the Rings 2           |Uncle               |2018    |available");
@@ -31,40 +30,54 @@ public class BookListTest {
     }
 
     @Test
-    public void testaddBookToFile() {
+    public void testAddOneBookToList() {
         BookList.removeAllBooks();
         assertEquals(0, BookList.getBookList().size());
 
-        BookList.addBookToFile(testBook1);
+        BookList.addBookToList(testBook1);
         assertEquals(1, BookList.getBookList().size());
         assertEquals("Lord of the Rings", BookList.getBookList().get(0).getTitle());
-        assertEquals("ME", BookList.getBookList().get(0).getAuthor());
-        assertEquals(1994, BookList.getBookList().get(0).getPublishYear());
-
-        BookList.addBookToFile(testBook3);
-        assertEquals(2, BookList.getBookList().size());
-        assertEquals("Book to handling bruh", BookList.getBookList().get(1).getTitle());
-        assertEquals("bot", BookList.getBookList().get(1).getAuthor());
-        assertEquals(1967, BookList.getBookList().get(1).getPublishYear());
+        assertEquals("ME", BookList.getBookList().get(0).getCreator());
+        assertEquals(1994, BookList.getBookList().get(0).getReleaseYear());
 
         BookList.removeAllBooks();
     }
 
     @Test
-    public void testRemoveBook() {
+    public void testAddMoreThanOneBookToList() {
         BookList.removeAllBooks();
-        BookList.addBookToFile(testBook1);
-        BookList.addBookToFile(testBook2);
-        BookList.addBookToFile(testBook3);
-        BookList.addBookToFile(testBook4);
+        assertEquals(0, BookList.getBookList().size());
+
+        BookList.addBookToList(testBook1);
+        BookList.addBookToList(testBook3);
+
+        assertEquals(2, BookList.getBookList().size());
+        assertEquals("Lord of the Rings", BookList.getBookList().get(0).getTitle());
+        assertEquals("ME", BookList.getBookList().get(0).getCreator());
+        assertEquals(1994, BookList.getBookList().get(0).getReleaseYear());
+        assertEquals("Book to handling bruh", BookList.getBookList().get(1).getTitle());
+        assertEquals("bot", BookList.getBookList().get(1).getCreator());
+        assertEquals(1967, BookList.getBookList().get(1).getReleaseYear());
+
+        BookList.removeAllBooks();
+    }
+
+    @Test
+    public void testRemoveOneBook() {
+        BookList.removeAllBooks();
+        BookList.addBookToList(testBook1);
+        BookList.addBookToList(testBook2);
+        BookList.addBookToList(testBook3);
+        BookList.addBookToList(testBook4);
 
         assertEquals(4, BookList.getBookList().size());
 
-        BookList.removeBook(testBook2.getTitle(), testBook2.getAuthor(), testBook2.getPublishYear());
+        BookList.removeBook(testBook2.getTitle(), testBook2.getCreator(), testBook2.getReleaseYear());
+
         assertEquals(3, BookList.getBookList().size());
         assertEquals("Book to handling bruh", BookList.getBookList().get(1).getTitle());
-        assertEquals("bot", BookList.getBookList().get(1).getAuthor());
-        assertEquals(1967, BookList.getBookList().get(1).getPublishYear());
+        assertEquals("bot", BookList.getBookList().get(1).getCreator());
+        assertEquals(1967, BookList.getBookList().get(1).getReleaseYear());
 
         BookList.removeAllBooks();
         assertEquals(0, BookList.getBookList().size());
@@ -75,10 +88,10 @@ public class BookListTest {
     @Test
     public void testListBooks() {
         BookList.removeAllBooks();
-        BookList.addBookToFile(testBook1);
-        BookList.addBookToFile(testBook2);
-        BookList.addBookToFile(testBook3);
-        BookList.addBookToFile(testBook4);
+        BookList.addBookToList(testBook1);
+        BookList.addBookToList(testBook2);
+        BookList.addBookToList(testBook3);
+        BookList.addBookToList(testBook4);
 
         assertEquals(4, BookList.getBookList().size());
         assertEquals(true, BookList.getBookList().get(2).getCheckOutStatus());
@@ -94,20 +107,42 @@ public class BookListTest {
     }
 
     @Test
-    public void testCheckOutABook() {
+    public void testCheckOutInvalidBook() {
         BookList.removeAllBooks();
-        BookList.addBookToFile(testBook1);
-        BookList.addBookToFile(testBook2);
-        BookList.addBookToFile(testBook3);
-        BookList.addBookToFile(testBook4);
-        BookList.addBookToFile(testBook5);
-        BookList.addBookToFile(testBook6);
-        BookList.addBookToFile(testBook7);
-        BookList.addBookToFile(testBook8);
+        BookList.addBookToList(testBook1);
+        BookList.addBookToList(testBook2);
+        BookList.addBookToList(testBook3);
+        BookList.addBookToList(testBook4);
+        BookList.addBookToList(testBook5);
+        BookList.addBookToList(testBook6);
+        BookList.addBookToList(testBook7);
+        BookList.addBookToList(testBook8);
 
         BookList.checkOutABook(-3);
 
         BookList.checkOutABook(0);
+
+        BookList.checkOutABook(5);
+
+        assertEquals(unsuccessfulCheckOutMessage + "\n" +
+                unsuccessfulCheckOutMessage + "\n" +
+                unsuccessfulCheckOutMessage + "\n"
+                , outContent.toString());
+
+        BookList.removeAllBooks();
+    }
+
+    @Test
+    public void testCheckOutValidBook() {
+        BookList.removeAllBooks();
+        BookList.addBookToList(testBook1);
+        BookList.addBookToList(testBook2);
+        BookList.addBookToList(testBook3);
+        BookList.addBookToList(testBook4);
+        BookList.addBookToList(testBook5);
+        BookList.addBookToList(testBook6);
+        BookList.addBookToList(testBook7);
+        BookList.addBookToList(testBook8);
 
         assertTrue(BookList.getBookList().get(1).getCheckOutStatus());
         BookList.checkOutABook(1);
@@ -117,42 +152,51 @@ public class BookListTest {
         BookList.checkOutABook(3);
         assertFalse(BookList.getBookList().get(6).getCheckOutStatus());
 
-        BookList.checkOutABook(5);
-
-        assertEquals(unsuccessfulCheckOutMessage + "\n" +
-                unsuccessfulCheckOutMessage + "\n" +
-                successfulCheckOutMessage + "\n" +
-                successfulCheckOutMessage + "\n" +
-                unsuccessfulCheckOutMessage + "\n"
+        assertEquals(successfulCheckOutMessage + "\n" +
+                successfulCheckOutMessage + "\n"
                 , outContent.toString());
 
         BookList.removeAllBooks();
     }
 
     @Test
-    public void testReturnABook() {
+    public void testReturnInvalidBook() {
         BookList.removeAllBooks();
-        BookList.addBookToFile(testBook1);
-        BookList.addBookToFile(testBook2);
-        BookList.addBookToFile(testBook3);
-        BookList.addBookToFile(testBook4);
-        BookList.addBookToFile(testBook5);
-        BookList.addBookToFile(testBook8);
+        BookList.addBookToList(testBook1);
+        BookList.addBookToList(testBook2);
+        BookList.addBookToList(testBook3);
+        BookList.addBookToList(testBook4);
+        BookList.addBookToList(testBook5);
+        BookList.addBookToList(testBook8);
 
-        BookList.returnABook(testBook6.getTitle(), testBook6.getAuthor(), testBook6.getPublishYear());
+        BookList.returnABook(testBook6.getTitle(), testBook6.getCreator(), testBook6.getReleaseYear());
 
         assertTrue(BookList.getBookList().get(1).getCheckOutStatus());
-        BookList.returnABook(testBook2.getTitle(), testBook2.getAuthor(), testBook2.getPublishYear());
+        BookList.returnABook(testBook2.getTitle(), testBook2.getCreator(), testBook2.getReleaseYear());
         assertTrue(BookList.getBookList().get(1).getCheckOutStatus());
-
-        assertFalse(BookList.getBookList().get(3).getCheckOutStatus());
-        BookList.returnABook(testBook4.getTitle(), testBook4.getAuthor(), testBook4.getPublishYear());
-        assertTrue(BookList.getBookList().get(3).getCheckOutStatus());
 
         assertEquals(unsuccessfulReturnMessage + "\n" +
-                unsuccessfulReturnMessage + "\n" +
-                successfulReturnMessage + "\n"
+                unsuccessfulReturnMessage + "\n"
                 , outContent.toString());
+
+        BookList.removeAllBooks();
+    }
+
+    @Test
+    public void testReturnValidBook() {
+        BookList.removeAllBooks();
+        BookList.addBookToList(testBook1);
+        BookList.addBookToList(testBook2);
+        BookList.addBookToList(testBook3);
+        BookList.addBookToList(testBook4);
+        BookList.addBookToList(testBook5);
+        BookList.addBookToList(testBook8);
+
+        assertFalse(BookList.getBookList().get(3).getCheckOutStatus());
+        BookList.returnABook(testBook4.getTitle(), testBook4.getCreator(), testBook4.getReleaseYear());
+        assertTrue(BookList.getBookList().get(3).getCheckOutStatus());
+
+        assertEquals(successfulReturnMessage + "\n", outContent.toString());
 
         BookList.removeAllBooks();
     }

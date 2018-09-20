@@ -23,23 +23,23 @@ public class BookTest {
 
     @Test
     public void testGetAuthor() {
-        assertEquals(null, emptyBook.getAuthor());
-        assertEquals("ME", testBookAttribute.getAuthor());
-        assertEquals("Uncle", testBookDetail.getAuthor());
+        assertEquals(null, emptyBook.getCreator());
+        assertEquals("ME", testBookAttribute.getCreator());
+        assertEquals("Uncle", testBookDetail.getCreator());
     }
 
     @Test
     public void testGetPublishYear() {
-        assertEquals(0, emptyBook.getPublishYear());
-        assertEquals(1994, testBookAttribute.getPublishYear());
-        assertEquals(2018, testBookDetail.getPublishYear());
+        assertEquals(0, emptyBook.getReleaseYear());
+        assertEquals(1994, testBookAttribute.getReleaseYear());
+        assertEquals(2018, testBookDetail.getReleaseYear());
     }
 
     @Test
     public void testListBookDetail() {
-        assertEquals(null, emptyBook.listBookDetail());
-        assertEquals("Lord of the Rings             |ME                  |1994", testBookAttribute.listBookDetail());
-        assertEquals("Lord of the Rings 2           |Uncle               |2018", testBookDetail.listBookDetail());
+        assertEquals(null, emptyBook.listDetail());
+        assertEquals("Lord of the Rings             |ME                  |1994", testBookAttribute.listDetail());
+        assertEquals("Lord of the Rings 2           |Uncle               |2018", testBookDetail.listDetail());
     }
 
     @Test
@@ -50,32 +50,44 @@ public class BookTest {
     }
 
     @Test
-    public void testCheckOutBook() {
+    public void testCheckOutBookForEmptyBook() {
         assertTrue(emptyBook.getCheckOutStatus());
-        emptyBook.checkOutBook();
+        emptyBook.checkOutItem();
         assertTrue(emptyBook.getCheckOutStatus());
+    }
 
+    @Test
+    public void testCheckOutBookForUnavailableBook() {
         assertFalse(testBookAttribute.getCheckOutStatus());
-        testBookAttribute.checkOutBook();
+        testBookAttribute.checkOutItem();
         assertFalse(testBookAttribute.getCheckOutStatus());
+    }
 
+    @Test
+    public void testCheckOutBookForAvailableBook() {
         assertTrue(testBookDetail.getCheckOutStatus());
-        testBookDetail.checkOutBook();
+        testBookDetail.checkOutItem();
         assertFalse(testBookDetail.getCheckOutStatus());
     }
 
     @Test
-    public void testReturnBook() {
+    public void testReturnBookForEmptyBook() {
         assertTrue(emptyBook.getCheckOutStatus());
-        emptyBook.returnBook();
+        emptyBook.returnItem();
         assertTrue(emptyBook.getCheckOutStatus());
+    }
 
+    @Test
+    public void testReturnBookForUnavailableBook() {
         assertFalse(testBookAttribute.getCheckOutStatus());
-        testBookAttribute.returnBook();
+        testBookAttribute.returnItem();
         assertTrue(testBookAttribute.getCheckOutStatus());
+    }
 
+    @Test
+    public void testReturnBookForAvailableBook() {
         assertTrue(testBookDetail.getCheckOutStatus());
-        testBookDetail.returnBook();
+        testBookDetail.returnItem();
         assertTrue(testBookDetail.getCheckOutStatus());
     }
 }

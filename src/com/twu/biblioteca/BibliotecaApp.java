@@ -1,6 +1,5 @@
 package com.twu.biblioteca;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -9,18 +8,16 @@ public class BibliotecaApp {
     private static String invalidMenuOptionMessage = "Select a valid option!\n";
     //private static String actionMessage = "What would you like to do?\n";
 
-    private static List<String> options = new ArrayList<String>();
     private static String userChoice = "-1";
     private static String input;
 
     public static void main(String[] args) {
 
         Menu.openProgram();
-        options = Menu.getOptions();
 
         do {
             input = getUserChoice();
-            checkUserChoice(userChoice, options);
+            checkUserChoice(userChoice, Menu.getOptions());
             if (input.toLowerCase().indexOf("quit") == -1) {
                 Menu.showMenu();
             }
@@ -29,7 +26,7 @@ public class BibliotecaApp {
         Menu.closeProgram();
     }
 
-    public static String getUserChoice() {
+    private static String getUserChoice() {
         Scanner reader = new Scanner(System.in);
         userChoice = reader.nextLine();
         return userChoice;
@@ -58,7 +55,7 @@ public class BibliotecaApp {
         return;
     }
 
-    public static int parseOption(String userChoice, List<String> options) {
+    private static int parseOption(String userChoice, List<String> options) {
         if (userChoice.length() >= 4 && userChoice.toLowerCase().indexOf("quit") >= 0) return 0;
         return isNumericAndValid(userChoice, options);
     }

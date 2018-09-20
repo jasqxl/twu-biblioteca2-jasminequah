@@ -1,12 +1,16 @@
 package com.twu.biblioteca;
 
-import org.junit.*;
-import java.io.*;
-import java.util.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.twu.biblioteca.BibliotecaApp.checkUserChoice;
-import static com.twu.biblioteca.BibliotecaApp.parseOption;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class BibliotecaAppTest {
 
@@ -23,7 +27,7 @@ public class BibliotecaAppTest {
         }
 
     @Test
-    public void testCheckUserChoice() {
+    public void testQuit() {
         options.add("List Books");
         options.add("Check out books");
         options.add("Return book");
@@ -33,34 +37,43 @@ public class BibliotecaAppTest {
 
         outContent.reset();
 
+        checkUserChoice("Quit", options);
+        assertEquals("", outContent.toString());
+    }
+
+    @Test
+    public void testInvalidOption() {
+        options.add("List Books");
+        options.add("Check out books");
+        options.add("Return book");
+
         checkUserChoice("0", options);
+        assertEquals(invalidMenuOptionMessage + "\n", outContent.toString());
+
+        outContent.reset();
+
+        checkUserChoice("dg f", options);
         assertEquals(invalidMenuOptionMessage + "\n", outContent.toString());
 
         outContent.reset();
 
         checkUserChoice("-2", options);
         assertEquals(invalidMenuOptionMessage + "\n", outContent.toString());
-
-        outContent.reset();
-
-        checkUserChoice("2", options);
-        assertEquals("", outContent.toString());
     }
 
     @Test
-    public void testParseOption() {
+    public void testValidOption() {
         options.add("List Books");
         options.add("Check out books");
         options.add("Return book");
 
-        assertEquals(0, parseOption("quit", options));
-        assertEquals(0, parseOption("Quit", options));
+        checkUserChoice("2", options);
+        assertEquals("", outContent.toString());
 
-        assertEquals(-1, parseOption("adsf", options));
-        assertEquals(-1, parseOption("List Book", options));
+        outContent.reset();
 
-        assertEquals(1, parseOption("1", options));
-        assertEquals(3, parseOption("3", options));
+        checkUserChoice("3", options);
+        assertEquals("", outContent.toString());
     }
 
     @After

@@ -45,7 +45,6 @@ public class Menu {
         catch(IOException ex) {
             System.out.println("Error reading file '" + fileName + "'");
         }
-
     }
 
     private static void writeToOptionsFile(String newOption) {

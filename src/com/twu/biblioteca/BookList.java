@@ -43,11 +43,11 @@ public class BookList {
         listOfBooks = listBooks();
     }
 
-    public static void addBookToFile(Book newBook) {
+    public static void addBookToList(Book newBook) {
         try (FileWriter fileWriter = new FileWriter(fileName, true);
              BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
              PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
-            printWriter.println(newBook.listAllBookDetail());
+            printWriter.println(newBook.listAllDetail());
         }
         catch(IOException ex1) {
             System.out.println("Error reading file '" + fileName + "'");
@@ -55,11 +55,11 @@ public class BookList {
         retrieveBookList();
     }
 
-    public static void removeBook(String title, String author, int publishYear) {
+    public static void removeBook(String title, String creator, int publishYear) {
         for (int i = 0; i < bookList.size(); i++) {
             if (bookList.get(i).getTitle().toLowerCase().indexOf(title.toLowerCase()) != -1 &&
-                    bookList.get(i).getAuthor().toLowerCase().indexOf(author.toLowerCase()) != -1 &&
-                    bookList.get(i).getPublishYear() == publishYear) {
+                    bookList.get(i).getCreator().toLowerCase().indexOf(creator.toLowerCase()) != -1 &&
+                    bookList.get(i).getReleaseYear() == publishYear) {
                 bookList.remove(i);
                 i = bookList.size();
             }
@@ -70,7 +70,7 @@ public class BookList {
              PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
 
             for (int i = 0; i < bookList.size(); i++) {
-                printWriter.println(bookList.get(i).listAllBookDetail());
+                printWriter.println(bookList.get(i).listAllDetail());
             }
         }
         catch(IOException ex1) {
@@ -111,7 +111,7 @@ public class BookList {
                 if (bookList.get(i).getCheckOutStatus()) {
                     numberOfAvailableBooks++;
                     bookSerialNumberArray[bookSerialNumber - 1] = i;
-                    listOfBooks = listOfBooks + String.format("%-5d", bookSerialNumber) + "|" + bookList.get(i).listBookDetail() + "\n";
+                    listOfBooks = listOfBooks + String.format("%-5d", bookSerialNumber) + "|" + bookList.get(i).listDetail() + "\n";
                     bookSerialNumber++;
                 }
             }
@@ -129,7 +129,7 @@ public class BookList {
         }
         else if (bookList.get(bookSerialNumberArray[serial - 1]) != null &&
                 bookList.get(bookSerialNumberArray[serial - 1]).getCheckOutStatus()) {
-            bookList.get(bookSerialNumberArray[serial - 1]).checkOutBook();
+            bookList.get(bookSerialNumberArray[serial - 1]).checkOutItem();
             System.out.println(successfulCheckOutMessage);
         }
         else {
@@ -140,15 +140,15 @@ public class BookList {
         listOfBooks = listBooks();
     }
 
-    public static void returnABook(String title, String author, int publishYear) {
+    public static void returnABook(String title, String creator, int publishYear) {
         Boolean isReturned = false;
 
         for (int i = 0; i < bookList.size(); i++) {
             if (bookList.get(i).getTitle().toLowerCase().indexOf(title.toLowerCase()) != -1 &&
-                    bookList.get(i).getAuthor().toLowerCase().indexOf(author.toLowerCase()) != -1 &&
-                    bookList.get(i).getPublishYear() == publishYear &&
+                    bookList.get(i).getCreator().toLowerCase().indexOf(creator.toLowerCase()) != -1 &&
+                    bookList.get(i).getReleaseYear() == publishYear &&
                     bookList.get(i).getCheckOutStatus() == false) {
-                bookList.get(i).returnBook();
+                bookList.get(i).returnItem();
                 isReturned = true;
                 System.out.println(successfulReturnMessage);
                 i = bookList.size();
