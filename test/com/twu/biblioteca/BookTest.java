@@ -5,14 +5,10 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class BookTest {
-    private static String successfulCheckOutMessage = "Thank you! Enjoy the book.\n";
-    private static String unsuccessfulCheckOutMessage = "That book is not available.\n";
-    private static String successfulReturnMessage = "Thank you for returning the book.\n";
-    private static String unsuccessfulReturnMessage = "That is not a valid book to return.\n";
 
     private Book emptyBook = new Book();
     private Book testBookAttribute = new Book("Lord of the Rings", "ME", 1994, false);
-    private Book testBookDetail = new Book("Lord of the Rings 2           |Uncle               |2018    |Available");
+    private Book testBookDetail = new Book("Lord of the Rings 2           |Uncle               |2018 |Available");
 
     @Test
     public void testGetTitle() {

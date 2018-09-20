@@ -41,6 +41,7 @@ public class Menu {
         }
         catch(FileNotFoundException ex) {
             writeToOptionsFile("List Books");
+            writeToOptionsFile("List Movies");
         }
         catch(IOException ex) {
             System.out.println("Error reading file '" + fileName + "'");
@@ -85,11 +86,15 @@ public class Menu {
     public static void removeAllOptions() {
         Options.clear();
         Options.add("List Books");
+        Options.add("List Movies");
 
         try (FileWriter fileWriter = new FileWriter(fileName, false);
              BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
              PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
-            printWriter.println("List Books");
+
+            for (int i = 0; i < Options.size(); i++) {
+                printWriter.println(Options.get(i));
+            }
         }
         catch(IOException ex1) {
             System.out.println("Error reading file '" + fileName + "'");

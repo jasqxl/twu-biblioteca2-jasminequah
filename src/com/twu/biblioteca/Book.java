@@ -21,16 +21,15 @@ public class Book implements Media {
     public Book(String bookDetails) {
         this.title = bookDetails.substring(0, 30).trim();
         this.author = bookDetails.substring(31, 51).trim();
-        this.publishYear = Integer.parseInt(bookDetails.substring(52, 56));
+        this.publishYear = Integer.parseInt(bookDetails.substring(52, 57).trim());
 
-        if (bookDetails.substring(61, bookDetails.length()).toLowerCase().indexOf("unavailable") != -1) {
+        if (bookDetails.substring(58, bookDetails.length()).toLowerCase().indexOf("unavailable") != -1) {
             this.isAvailStatus = false;
         }
-        else if(bookDetails.substring(61, bookDetails.length()).toLowerCase().indexOf("available") != -1)  {
+        else if(bookDetails.substring(58, bookDetails.length()).toLowerCase().indexOf("available") != -1)  {
             this.isAvailStatus = true;
         }
-
-        this.bookDetails = bookDetails;
+        formDetails();
     }
 
     private void formDetails() {
@@ -38,7 +37,10 @@ public class Book implements Media {
         if (this.isAvailStatus) bookStatus = "Available";
         else bookStatus = "Unavailable";
 
-        this.bookDetails = String.format("%-30s", title) + "|" + String.format("%-20s", author) + "|" + String.format("%-8s", Integer.toString(publishYear)) + "|" + bookStatus;
+        this.bookDetails = String.format("%-30s", title) + "|" +
+                String.format("%-20s", author) + "|" +
+                String.format("%-5s", Integer.toString(publishYear)) + "|" +
+                bookStatus;
     }
 
     public String getTitle() {
@@ -58,7 +60,7 @@ public class Book implements Media {
     }
 
     public String listDetail() {
-        return (this.bookDetails != null) ? bookDetails.substring(0, 56) : null;
+        return (this.bookDetails != null) ? bookDetails.substring(0, 57).trim() : null;
     }
 
     public String listAllDetail() {

@@ -2,100 +2,24 @@ package com.twu.biblioteca;
 
 import java.io.*;
 import java.util.*;
-public class BookList {
+public class BookList implements MediaList <Book> {
 
-    private static String bookListHeader = "S/N  |" + String.format("%-30s", "Book Title") + "|" + String.format("%-20s", "Author") + "|Publish Year";
-    private static String successfulCheckOutMessage = "Thank you! Enjoy the book.\n";
-    private static String unsuccessfulCheckOutMessage = "That book is not available.\n";
-    private static String successfulReturnMessage = "Thank you for returning the book.\n";
-    private static String unsuccessfulReturnMessage = "That is not a valid book to return.\n";
-    private static String emptyBookListMessage = "There are no available books right now, please try again later..\n";
+    private String bookListHeader = "S/N  |" + String.format("%-30s", "Book Title") + "|" + String.format("%-20s", "Author") + "|Year";
+    private String successfulCheckOutMessage = "Thank you! Enjoy the book.\n";
+    private String unsuccessfulCheckOutMessage = "That book is not available.\n";
+    private String successfulReturnMessage = "Thank you for returning the book.\n";
+    private String unsuccessfulReturnMessage = "That is not a valid book to return.\n";
+    private String emptyBookListMessage = "There are no available books right now, please try again later..\n";
 
-    private static List<Book> bookList = new ArrayList<Book>();
+    private List<Book> bookList = new ArrayList<Book>();
 
-    private static String fileName = "Book List.txt";
-    private static String line = null;
-    private static int[] bookSerialNumberArray;
-    private static int numberOfAvailableBooks;
-    private static String listOfBooks;
+    private String fileName = "Book List.txt";
+    private String line = null;
+    private int[] bookSerialNumberArray;
+    private int numberOfAvailableBooks;
+    private String listOfBooks;
 
-    private static void retrieveBookList () {
-        bookList.clear();
-        numberOfAvailableBooks = 0;
-
-        try {
-            FileReader fileReader = new FileReader(fileName);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            while((line = bufferedReader.readLine()) != null) {
-                Book newBook = new Book(line);
-                bookList.add(newBook);
-                if (bookList.get(bookList.size()-1).getCheckOutStatus()) numberOfAvailableBooks++;
-            }
-            bufferedReader.close();
-        }
-        catch(FileNotFoundException ex) {
-        }
-        catch(IOException ex) {
-            System.out.println("Error reading file '" + fileName + "'");
-        }
-
-        bookSerialNumberArray = null;
-        listOfBooks = listBooks();
-    }
-
-    public static void addBookToList(Book newBook) {
-        try (FileWriter fileWriter = new FileWriter(fileName, true);
-             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-             PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
-            printWriter.println(newBook.listAllDetail());
-        }
-        catch(IOException ex1) {
-            System.out.println("Error reading file '" + fileName + "'");
-        }
-        retrieveBookList();
-    }
-
-    public static void removeBook(String title, String creator, int publishYear) {
-        for (int i = 0; i < bookList.size(); i++) {
-            if (bookList.get(i).getTitle().toLowerCase().indexOf(title.toLowerCase()) != -1 &&
-                    bookList.get(i).getCreator().toLowerCase().indexOf(creator.toLowerCase()) != -1 &&
-                    bookList.get(i).getReleaseYear() == publishYear) {
-                bookList.remove(i);
-                i = bookList.size();
-            }
-        }
-
-        try (FileWriter fileWriter = new FileWriter(fileName, false);
-             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-             PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
-
-            for (int i = 0; i < bookList.size(); i++) {
-                printWriter.println(bookList.get(i).listAllDetail());
-            }
-        }
-        catch(IOException ex1) {
-            System.out.println("Error reading file '" + fileName + "'");
-        }
-        retrieveBookList();
-    }
-
-    public static void removeAllBooks() {
-        bookList.clear();
-        bookSerialNumberArray = null;
-        listOfBooks = null;
-        numberOfAvailableBooks = 0;
-
-        try (FileWriter fileWriter = new FileWriter(fileName, false);
-             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-             PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
-            printWriter.print("");
-        }
-        catch(IOException ex1) {
-            System.out.println("Error reading file '" + fileName + "'");
-        }
-    }
-
-    public static String listBooks() {
+    public String listItems() {
         listOfBooks = "";
 
         if (bookList.size() == 0) {
@@ -120,9 +44,85 @@ public class BookList {
         return listOfBooks;
     }
 
-    public static void checkOutABook(int serial) {
+    public void retrieveList () {
+        bookList.clear();
+        numberOfAvailableBooks = 0;
+
+        try {
+            FileReader fileReader = new FileReader(fileName);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            while((line = bufferedReader.readLine()) != null) {
+                Book newBook = new Book(line);
+                bookList.add(newBook);
+                if (bookList.get(bookList.size()-1).getCheckOutStatus()) numberOfAvailableBooks++;
+            }
+            bufferedReader.close();
+        }
+        catch(FileNotFoundException ex) {
+        }
+        catch(IOException ex) {
+            System.out.println("Error reading file '" + fileName + "'");
+        }
+
         bookSerialNumberArray = null;
-        listOfBooks = listBooks();
+        listOfBooks = listItems();
+    }
+
+    public void addToList(Book newBook) {
+        try (FileWriter fileWriter = new FileWriter(fileName, true);
+             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+             PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
+            printWriter.println(newBook.listAllDetail());
+        }
+        catch(IOException ex1) {
+            System.out.println("Error reading file '" + fileName + "'");
+        }
+        retrieveList();
+    }
+
+    public void removeItem(String title, String creator, int publishYear) {
+        for (int i = 0; i < bookList.size(); i++) {
+            if (bookList.get(i).getTitle().toLowerCase().indexOf(title.toLowerCase()) != -1 &&
+                    bookList.get(i).getCreator().toLowerCase().indexOf(creator.toLowerCase()) != -1 &&
+                    bookList.get(i).getReleaseYear() == publishYear) {
+                bookList.remove(i);
+                i = bookList.size();
+            }
+        }
+
+        try (FileWriter fileWriter = new FileWriter(fileName, false);
+             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+             PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
+
+            for (int i = 0; i < bookList.size(); i++) {
+                printWriter.println(bookList.get(i).listAllDetail());
+            }
+        }
+        catch(IOException ex1) {
+            System.out.println("Error reading file '" + fileName + "'");
+        }
+        retrieveList();
+    }
+
+    public void removeAllItems() {
+        bookList.clear();
+        bookSerialNumberArray = null;
+        listOfBooks = null;
+        numberOfAvailableBooks = 0;
+
+        try (FileWriter fileWriter = new FileWriter(fileName, false);
+             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+             PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
+            printWriter.print("");
+        }
+        catch(IOException ex1) {
+            System.out.println("Error reading file '" + fileName + "'");
+        }
+    }
+
+    public void checkOutAnItem(int serial) {
+        bookSerialNumberArray = null;
+        listOfBooks = listItems();
 
         if (serial < 1 || serial > numberOfAvailableBooks) {
             System.out.println(unsuccessfulCheckOutMessage);
@@ -137,10 +137,10 @@ public class BookList {
         }
 
         bookSerialNumberArray = null;
-        listOfBooks = listBooks();
+        listOfBooks = listItems();
     }
 
-    public static void returnABook(String title, String creator, int publishYear) {
+    public void returnAnItem(String title, String creator, int publishYear) {
         Boolean isReturned = false;
 
         for (int i = 0; i < bookList.size(); i++) {
@@ -160,10 +160,10 @@ public class BookList {
         }
 
         bookSerialNumberArray = null;
-        listOfBooks = listBooks();
+        listOfBooks = listItems();
     }
 
-    public static List<Book> getBookList() {
+    public List<Book> getList() {
         return bookList;
     }
 }
