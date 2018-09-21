@@ -13,7 +13,7 @@ public class MovieList implements MediaList <Movie> {
     private String unsuccessfulReturnMessage = "That is not a valid movie to return.\n";
     private String emptyMovieListMessage = "There are no available movies right now, please try again later..\n";
 
-    private static String workingOptionFilePath = System.getProperty("user.dir") + "/Movie List.txt";
+    private static String workingFilePath = System.getProperty("user.dir") + "/Movie List.txt";
 
     private List<Movie> movieList = new ArrayList<Movie>();
     private List<String> allMovieListDetail = new ArrayList<String>();
@@ -28,7 +28,8 @@ public class MovieList implements MediaList <Movie> {
         numberOfAvailableMovies = 0;
 
         if (movieList.size() == 0) {
-            listOfMovies = emptyMovieListMessage;
+            retrieveList();
+            if (movieList.size() == 0) listOfMovies = emptyMovieListMessage;
         } else {
             listOfMovies = listOfMovies + movieListHeader + "\n";
             int movieSerialNumber = 1;
@@ -46,10 +47,10 @@ public class MovieList implements MediaList <Movie> {
         return listOfMovies;
     }
 
-    public void retrieveList () {
+    private void retrieveList () {
         movieList.clear();
         
-        File tmpDir = new File(workingOptionFilePath);
+        File tmpDir = new File(workingFilePath);
 
         if (tmpDir.exists()) allMovieListDetail = FileStream.readFromFile(fileName, allMovieListDetail);
 
@@ -60,7 +61,7 @@ public class MovieList implements MediaList <Movie> {
         }
         
         movieSerialNumberArray = null;
-        listOfMovies = listItems();
+        if (!(allMovieListDetail.size() == 0 && movieList.size() == 0)) listOfMovies = listItems();
     }
 
     public void addToList(Movie newMovie) {
@@ -93,7 +94,7 @@ public class MovieList implements MediaList <Movie> {
         FileStream.removeItemsFromFile(fileName, allMovieListDetail);
     }
 
-    public void checkOutAnItem(int serial, int libraryNumberOfBorrower) {
+    public void checkOutAnItem(int serial, String accountNumberOfBorrower) {
         movieSerialNumberArray = null;
         listOfMovies = listItems();
 
@@ -102,7 +103,7 @@ public class MovieList implements MediaList <Movie> {
         }
         else if (movieList.get(movieSerialNumberArray[serial - 1]) != null &&
                 movieList.get(movieSerialNumberArray[serial - 1]).getCheckOutStatus()) {
-            movieList.get(movieSerialNumberArray[serial - 1]).checkOutItem(libraryNumberOfBorrower);
+            movieList.get(movieSerialNumberArray[serial - 1]).checkOutItem(accountNumberOfBorrower);
             System.out.println(successfulCheckOutMessage);
         }
         else {

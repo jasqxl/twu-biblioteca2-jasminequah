@@ -60,7 +60,7 @@ public class BookListTest {
         assertEquals("bot", bookList.getList().get(1).getCreator());
         assertEquals(1967, bookList.getList().get(1).getReleaseYear());
 
-        bookList.removeAllItems();
+        //bookList.removeAllItems();
     }
 
     @Test
@@ -119,11 +119,11 @@ public class BookListTest {
         bookList.addToList(testBook7);
         bookList.addToList(testBook8);
 
-        bookList.checkOutAnItem(-3, 3974029);
+        bookList.checkOutAnItem(-3, "397-4029");
 
-        bookList.checkOutAnItem(0, 2376182);
+        bookList.checkOutAnItem(0, "237-6182");
 
-        bookList.checkOutAnItem(5, 8328372);
+        bookList.checkOutAnItem(5, "832-8372");
 
         assertEquals(unsuccessfulCheckOutMessage + "\n" +
                 unsuccessfulCheckOutMessage + "\n" +
@@ -146,11 +146,11 @@ public class BookListTest {
         bookList.addToList(testBook8);
 
         assertTrue(bookList.getList().get(1).getCheckOutStatus());
-        bookList.checkOutAnItem(1, 4796328);
+        bookList.checkOutAnItem(1, "479-6328");
         assertFalse(bookList.getList().get(1).getCheckOutStatus());
 
         assertTrue(bookList.getList().get(6).getCheckOutStatus());
-        bookList.checkOutAnItem(3, 2376282);
+        bookList.checkOutAnItem(3, "237-6282");
         assertFalse(bookList.getList().get(6).getCheckOutStatus());
 
         assertEquals(successfulCheckOutMessage + "\n" +

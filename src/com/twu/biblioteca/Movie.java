@@ -8,7 +8,7 @@ public class Movie implements Media {
     private double rating;
     private boolean isAvailStatus = true;
     private String movieDetails;
-    private int libraryNumberOfBorrower = 0;
+    private String accountNumberOfBorrower = "";
 
     public Movie() {}
 
@@ -60,8 +60,8 @@ public class Movie implements Media {
         return this.releaseYear;
     }
 
-    public int getBorrowerLibraryNumber() {
-        return this.libraryNumberOfBorrower;
+    public String getBorrowerLibraryNumber() {
+        return this.accountNumberOfBorrower;
     }
 
     public boolean getCheckOutStatus() {
@@ -76,21 +76,21 @@ public class Movie implements Media {
         return (this.movieDetails != null) ? movieDetails : null;
     }
 
-    public void checkOutItem(int libraryNumber) {
+    public void checkOutItem(String accountNumber) {
         if (this.title != null && this.director != null && this.releaseYear != 0) {
             this.isAvailStatus = false;
-            this.libraryNumberOfBorrower = libraryNumber;
+            this.accountNumberOfBorrower = accountNumber;
             formDetails();
         }
     }
 
     public void returnItem() {
         this.isAvailStatus = true;
-        this.libraryNumberOfBorrower = 0;
+        this.accountNumberOfBorrower = "";
         formDetails();
     }
 
-    public void recordBorrowerLibraryNumber(int libraryNumberOfBorrower) {
-        this.libraryNumberOfBorrower = libraryNumberOfBorrower;
+    public String getBorrowerAccountNumber() {
+        return this.accountNumberOfBorrower;
     }
 }

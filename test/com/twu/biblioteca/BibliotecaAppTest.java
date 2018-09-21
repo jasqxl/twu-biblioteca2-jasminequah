@@ -28,6 +28,7 @@ public class BibliotecaAppTest {
 
     @Test
     public void testQuit() {
+        options.clear();
         options.add("List Books");
         options.add("Check out books");
         options.add("Return book");
@@ -43,6 +44,7 @@ public class BibliotecaAppTest {
 
     @Test
     public void testInvalidOption() {
+        options.clear();
         options.add("List Books");
         options.add("Check out books");
         options.add("Return book");
@@ -63,6 +65,7 @@ public class BibliotecaAppTest {
 
     @Test
     public void testValidOption() {
+        options.clear();
         options.add("List Books");
         options.add("Check out books");
         options.add("Return book");

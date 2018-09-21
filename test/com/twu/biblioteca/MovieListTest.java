@@ -65,7 +65,7 @@ public class MovieListTest {
         assertEquals("bot", movieList.getList().get(1).getCreator());
         assertEquals(1967, movieList.getList().get(1).getReleaseYear());
 
-        movieList.removeAllItems();
+        //movieList.removeAllItems();
     }
 
     @Test
@@ -124,11 +124,11 @@ public class MovieListTest {
         movieList.addToList(testMovie7);
         movieList.addToList(testMovie8);
 
-        movieList.checkOutAnItem(-3, 2938749);
+        movieList.checkOutAnItem(-3, "235-2353");
 
-        movieList.checkOutAnItem(0, 9283647);
+        movieList.checkOutAnItem(0, "567-5675");
 
-        movieList.checkOutAnItem(5, 2389782);
+        movieList.checkOutAnItem(5, "43t-54tf");
 
         assertEquals(unsuccessfulCheckOutMessage + "\n" +
                 unsuccessfulCheckOutMessage + "\n" +
@@ -151,11 +151,11 @@ public class MovieListTest {
         movieList.addToList(testMovie8);
 
         assertTrue(movieList.getList().get(1).getCheckOutStatus());
-        movieList.checkOutAnItem(1, 8923729);
+        movieList.checkOutAnItem(1, "ert-34i3");
         assertFalse(movieList.getList().get(1).getCheckOutStatus());
 
         assertTrue(movieList.getList().get(6).getCheckOutStatus());
-        movieList.checkOutAnItem(3, 2398687);
+        movieList.checkOutAnItem(3, "34o-45jn");
         assertFalse(movieList.getList().get(6).getCheckOutStatus());
 
         assertEquals(successfulCheckOutMessage + "\n" +

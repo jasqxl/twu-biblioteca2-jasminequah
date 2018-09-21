@@ -11,7 +11,7 @@ public class BookList implements MediaList <Book> {
     private String unsuccessfulReturnMessage = "That is not a valid book to return.\n";
     private String emptyBookListMessage = "There are no available books right now, please try again later..\n";
 
-    private static String workingOptionFilePath = System.getProperty("user.dir") + "/Book List.txt";
+    private static String workingFilePath = System.getProperty("user.dir") + "/Book List.txt";
 
     private List<Book> bookList = new ArrayList<Book>();
     private List<String> allBookListDetail = new ArrayList<String>();
@@ -26,7 +26,8 @@ public class BookList implements MediaList <Book> {
         numberOfAvailableBooks = 0;
 
         if (bookList.size() == 0) {
-            listOfBooks = emptyBookListMessage;
+            retrieveList();
+            if (bookList.size() == 0) listOfBooks = emptyBookListMessage;
         }
         else {
             listOfBooks = listOfBooks + bookListHeader + "\n";
@@ -45,13 +46,11 @@ public class BookList implements MediaList <Book> {
         return listOfBooks;
     }
 
-    public void retrieveList () {
+    private void retrieveList() {
         bookList.clear();
 
-        File tmpDir = new File(workingOptionFilePath);
-
+        File tmpDir = new File(workingFilePath);
         if (tmpDir.exists()) allBookListDetail = FileStream.readFromFile(fileName, allBookListDetail);
-
         for (int i = 0; i < allBookListDetail.size(); i++) {
             Book newBook = new Book(allBookListDetail.get(i));
             bookList.add(newBook);
@@ -59,7 +58,7 @@ public class BookList implements MediaList <Book> {
         }
 
         bookSerialNumberArray = null;
-        listOfBooks = listItems();
+        if (!(allBookListDetail.size() == 0 && bookList.size() == 0)) listOfBooks = listItems();
     }
 
     public void addToList(Book newBook) {
@@ -92,7 +91,7 @@ public class BookList implements MediaList <Book> {
         FileStream.removeItemsFromFile(fileName, allBookListDetail);
     }
 
-    public void checkOutAnItem(int serial, int libraryNumberOfBorrower) {
+    public void checkOutAnItem(int serial, String accountNumberOfBorrower) {
         bookSerialNumberArray = null;
         listOfBooks = listItems();
 
@@ -101,7 +100,7 @@ public class BookList implements MediaList <Book> {
         }
         else if (bookList.get(bookSerialNumberArray[serial - 1]) != null &&
                 bookList.get(bookSerialNumberArray[serial - 1]).getCheckOutStatus()) {
-            bookList.get(bookSerialNumberArray[serial - 1]).checkOutItem(libraryNumberOfBorrower);
+            bookList.get(bookSerialNumberArray[serial - 1]).checkOutItem(accountNumberOfBorrower);
             System.out.println(successfulCheckOutMessage);
         }
         else {

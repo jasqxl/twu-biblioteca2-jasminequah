@@ -48,26 +48,25 @@ public class BookTest {
     @Test
     public void testCheckOutBookForEmptyBook() {
         assertTrue(emptyBook.getCheckOutStatus());
-        emptyBook.checkOutItem(5439212);
+        emptyBook.checkOutItem("4ti-38ui");
         assertTrue(emptyBook.getCheckOutStatus());
     }
 
     @Test
     public void testCheckOutBookForUnavailableBook() {
         assertFalse(testBookAttribute.getCheckOutStatus());
-        testBookAttribute.checkOutItem(7506434);
+        testBookAttribute.checkOutItem("ij4-83ih");
         assertFalse(testBookAttribute.getCheckOutStatus());
     }
 
     @Test
     public void testCheckOutBookForAvailableBook() {
-        testBookAttribute.recordBorrowerLibraryNumber(9834249);
         assertTrue(testBookDetail.getCheckOutStatus());
 
-        testBookDetail.checkOutItem(6574543);
+        testBookDetail.checkOutItem("657-4543");
 
         assertFalse(testBookDetail.getCheckOutStatus());
-        assertEquals(6574543, testBookDetail.getBorrowerLibraryNumber());
+        assertEquals("657-4543", testBookDetail.getBorrowerAccountNumber());
     }
 
     @Test
@@ -84,7 +83,7 @@ public class BookTest {
         assertFalse(testBookDetail.getCheckOutStatus());
         testBookDetail.returnItem();
         assertTrue(testBookDetail.getCheckOutStatus());
-        assertEquals(0, testBookDetail.getBorrowerLibraryNumber());
+        assertEquals("", testBookDetail.getBorrowerAccountNumber());
     }
 
     @Test
