@@ -124,11 +124,11 @@ public class MovieListTest {
         movieList.addToList(testMovie7);
         movieList.addToList(testMovie8);
 
-        movieList.checkOutAnItem(-3);
+        movieList.checkOutAnItem(-3, 2938749);
 
-        movieList.checkOutAnItem(0);
+        movieList.checkOutAnItem(0, 9283647);
 
-        movieList.checkOutAnItem(5);
+        movieList.checkOutAnItem(5, 2389782);
 
         assertEquals(unsuccessfulCheckOutMessage + "\n" +
                 unsuccessfulCheckOutMessage + "\n" +
@@ -151,11 +151,11 @@ public class MovieListTest {
         movieList.addToList(testMovie8);
 
         assertTrue(movieList.getList().get(1).getCheckOutStatus());
-        movieList.checkOutAnItem(1);
+        movieList.checkOutAnItem(1, 8923729);
         assertFalse(movieList.getList().get(1).getCheckOutStatus());
 
         assertTrue(movieList.getList().get(6).getCheckOutStatus());
-        movieList.checkOutAnItem(3);
+        movieList.checkOutAnItem(3, 2398687);
         assertFalse(movieList.getList().get(6).getCheckOutStatus());
 
         assertEquals(successfulCheckOutMessage + "\n" +

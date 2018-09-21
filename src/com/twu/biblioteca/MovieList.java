@@ -13,16 +13,19 @@ public class MovieList implements MediaList <Movie> {
     private String unsuccessfulReturnMessage = "That is not a valid movie to return.\n";
     private String emptyMovieListMessage = "There are no available movies right now, please try again later..\n";
 
+    private static String workingOptionFilePath = System.getProperty("user.dir") + "/Movie List.txt";
+
     private List<Movie> movieList = new ArrayList<Movie>();
+    private List<String> allMovieListDetail = new ArrayList<String>();
 
     private String fileName = "Movie List.txt";
-    private String line = null;
     private int[] movieSerialNumberArray;
     private int numberOfAvailableMovies;
     private String listOfMovies;
 
     public String listItems() {
         listOfMovies = "";
+        numberOfAvailableMovies = 0;
 
         if (movieList.size() == 0) {
             listOfMovies = emptyMovieListMessage;
@@ -30,7 +33,6 @@ public class MovieList implements MediaList <Movie> {
             listOfMovies = listOfMovies + movieListHeader + "\n";
             int movieSerialNumber = 1;
             movieSerialNumberArray = new int[movieList.size()];
-            numberOfAvailableMovies = 0;
 
             for (int i = 0; i < movieList.size(); i++) {
                 if (movieList.get(i).getCheckOutStatus()) {
@@ -41,87 +43,57 @@ public class MovieList implements MediaList <Movie> {
                 }
             }
         }
-
         return listOfMovies;
     }
 
     public void retrieveList () {
         movieList.clear();
-        numberOfAvailableMovies = 0;
+        
+        File tmpDir = new File(workingOptionFilePath);
 
-        try {
-            FileReader fileReader = new FileReader(fileName);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            while((line = bufferedReader.readLine()) != null) {
-                Movie newMovie = new Movie(line);
-                movieList.add(newMovie);
-                if (movieList.get(movieList.size()-1).getCheckOutStatus()) numberOfAvailableMovies++;
-            }
-            bufferedReader.close();
-        }
-        catch(FileNotFoundException ex) {
-        }
-        catch(IOException ex) {
-            System.out.println("Error reading file '" + fileName + "'");
-        }
+        if (tmpDir.exists()) allMovieListDetail = FileStream.readFromFile(fileName, allMovieListDetail);
 
+        for (int i = 0; i < allMovieListDetail.size(); i++) {
+            Movie newMovie = new Movie(allMovieListDetail.get(i));
+            movieList.add(newMovie);
+            if (movieList.get(movieList.size()-1).getCheckOutStatus()) numberOfAvailableMovies++;
+        }
+        
         movieSerialNumberArray = null;
         listOfMovies = listItems();
     }
 
     public void addToList(Movie newMovie) {
-        try (FileWriter fileWriter = new FileWriter(fileName, true);
-             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-             PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
-            printWriter.println(newMovie.listAllDetail());
-        }
-        catch(IOException ex1) {
-            System.out.println("Error reading file '" + fileName + "'");
-        }
+        allMovieListDetail.add(newMovie.listAllDetail());
+        FileStream.appendItemToFile(fileName, allMovieListDetail);
         retrieveList();
     }
 
     public void removeItem(String title, String creator, int publishYear) {
-        for (int i = 0; i < movieList.size(); i++) {
+        for (int i = 0; i < allMovieListDetail.size(); i++) {
             if (movieList.get(i).getTitle().toLowerCase().indexOf(title.toLowerCase()) != -1 &&
                     movieList.get(i).getCreator().toLowerCase().indexOf(creator.toLowerCase()) != -1 &&
                     movieList.get(i).getReleaseYear() == publishYear) {
-                movieList.remove(i);
-                i = movieList.size();
+                allMovieListDetail.remove(i);
+                i = allMovieListDetail.size();
             }
         }
 
-        try (FileWriter fileWriter = new FileWriter(fileName, false);
-             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-             PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
-
-            for (int i = 0; i < movieList.size(); i++) {
-                printWriter.println(movieList.get(i).listAllDetail());
-            }
-        }
-        catch(IOException ex1) {
-            System.out.println("Error reading file '" + fileName + "'");
-        }
+        FileStream.removeItemsFromFile(fileName, allMovieListDetail);
         retrieveList();
     }
 
     public void removeAllItems() {
         movieList.clear();
+        allMovieListDetail.clear();
         movieSerialNumberArray = null;
         listOfMovies = null;
         numberOfAvailableMovies = 0;
 
-        try (FileWriter fileWriter = new FileWriter(fileName, false);
-             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-             PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
-            printWriter.print("");
-        }
-        catch(IOException ex1) {
-            System.out.println("Error reading file '" + fileName + "'");
-        }
+        FileStream.removeItemsFromFile(fileName, allMovieListDetail);
     }
 
-    public void checkOutAnItem(int serial) {
+    public void checkOutAnItem(int serial, int libraryNumberOfBorrower) {
         movieSerialNumberArray = null;
         listOfMovies = listItems();
 
@@ -130,7 +102,7 @@ public class MovieList implements MediaList <Movie> {
         }
         else if (movieList.get(movieSerialNumberArray[serial - 1]) != null &&
                 movieList.get(movieSerialNumberArray[serial - 1]).getCheckOutStatus()) {
-            movieList.get(movieSerialNumberArray[serial - 1]).checkOutItem();
+            movieList.get(movieSerialNumberArray[serial - 1]).checkOutItem(libraryNumberOfBorrower);
             System.out.println(successfulCheckOutMessage);
         }
         else {

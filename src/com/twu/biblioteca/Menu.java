@@ -9,13 +9,17 @@ public class Menu {
     private static String goodbyeMessage = "Thank you for using Biblioteca..\n";
     private static String menuHeading = "Please choose an action from the list below:";
 
-    private static List<String> Options = new ArrayList<String>();
-    private static String fileName = "Options.txt";
-    private static String line = null;
-
-    //private static String workingOptionFilePath = System.getProperty("user.dir") + "/Options.txt";
+    private static List<String> necessaryOptions = new ArrayList<String>();
+    private static List<String> options = new ArrayList<String>();
+    private static String fileName = "options.txt";
+    private static String workingOptionFilePath = System.getProperty("user.dir") + "/options.txt";
 
     public static void openProgram() {
+        necessaryOptions.clear();
+        necessaryOptions.add("List Books\n");
+        necessaryOptions.add("List Movies\n");
+        options = necessaryOptions;
+
         System.out.println(welcomeMessage);
         showMenu();
     }
@@ -25,87 +29,44 @@ public class Menu {
     }
 
     public static void showMenu () {
-        Options.clear();
+        System.out.println(menuHeading);
 
-        try {
-            FileReader fileReader = new FileReader(fileName);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
+        File tmpDir = new File(workingOptionFilePath);
 
-            System.out.println(menuHeading);
+        if (tmpDir.exists()) options = FileStream.readFromFile(fileName, necessaryOptions);
+        else addOptionsToFile("");
 
-            while((line = bufferedReader.readLine()) != null) {
-                Options.add(line);
-                System.out.println(Options.size() + ") " + Options.get(Options.size()-1));
-            }
-            bufferedReader.close();
+        for (int i = 0; i < options.size(); i++) {
+            System.out.println(i+1 + ") " + options.get(i));
         }
-        catch(FileNotFoundException ex) {
-            writeToOptionsFile("List Books");
-            writeToOptionsFile("List Movies");
-        }
-        catch(IOException ex) {
-            System.out.println("Error reading file '" + fileName + "'");
-        }
+
+        System.out.print("\nEnter choice here: ");
     }
 
-    private static void writeToOptionsFile(String newOption) {
-        try (FileWriter fileWriter = new FileWriter(fileName, true);
-             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-             PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
-            printWriter.println(newOption);
-        }
-        catch(IOException ex1) {
-            System.out.println("Error reading file '" + fileName + "'");
-        }
+    public static void addOptionsToFile(String newOption) {
+        options.add(newOption + "\n");
+        FileStream.appendItemToFile(fileName, options);
         showMenu();
     }
 
-    public static void removeOptions(String optionToRemove) {
-
-        for (int i = 0; i < Options.size(); i++) {
-            if (Options.get(i).toLowerCase().indexOf(optionToRemove.toLowerCase()) != -1) {
-                Options.remove(i);
-                i = Options.size();
+    public static void removeOption(String optionToRemove) {
+        for (int i = 0; i < options.size(); i++) {
+            if (options.get(i).toLowerCase().indexOf((optionToRemove).toLowerCase()) != -1) {
+                options.remove(i);
+                i = options.size();
             }
         }
 
-        try (FileWriter fileWriter = new FileWriter(fileName, false);
-             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-             PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
-
-            for (int i = 0; i < Options.size(); i++) {
-                printWriter.println(Options.get(i));
-            }
-        }
-        catch(IOException ex1) {
-            System.out.println("Error reading file '" + fileName + "'");
-        }
+        FileStream.removeItemsFromFile(fileName, options);
         showMenu();
     }
 
     public static void removeAllOptions() {
-        Options.clear();
-        Options.add("List Books");
-        Options.add("List Movies");
-
-        try (FileWriter fileWriter = new FileWriter(fileName, false);
-             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-             PrintWriter printWriter = new PrintWriter(bufferedWriter)) {
-
-            for (int i = 0; i < Options.size(); i++) {
-                printWriter.println(Options.get(i));
-            }
-        }
-        catch(IOException ex1) {
-            System.out.println("Error reading file '" + fileName + "'");
-        }
-    }
-
-    public static void addOption(String newOptionToAdd) {
-        writeToOptionsFile(newOptionToAdd);
+        options.clear();
+        FileStream.removeItemsFromFile(fileName, options);
     }
 
     public static List<String> getOptions() {
-        return Options;
+        return options;
     }
 }

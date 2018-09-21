@@ -5,8 +5,6 @@ import java.util.Scanner;
 
 public class BibliotecaApp {
 
-    private String bookListHeader = "S/N  |" + String.format("%-30s", "Book Title") + "|" + String.format("%-20s", "Author") + "|Year";
-    private String movieListHeader = "S/N  |" + String.format("%-30s", "Movie Title") + "|" + String.format("%-20s", "Director") + "|Year |Rating";
     private static String invalidMenuOptionMessage = "Select a valid option!\n";
     //private static String actionMessage = "What would you like to do?\n";
 
@@ -15,8 +13,8 @@ public class BibliotecaApp {
     private static String userChoice = "-1";
     private static String input;
 
-    public static void main(String[] args) {
 
+    public static void main(String[] args) {
         Menu.openProgram();
 
         do {

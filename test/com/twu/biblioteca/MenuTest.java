@@ -28,7 +28,7 @@ public class MenuTest {
         Menu.removeAllOptions();
         Menu.openProgram();
         assertEquals(welcomeMessage + "\n" + menuHeading + 
-                "\n1) List Books\n2) List Movies\n", outContent.toString());
+                "\n1) List Books\n2) List Movies\n\nEnter choice here: ", outContent.toString());
     }
 
     @Test
@@ -41,7 +41,7 @@ public class MenuTest {
     public void testShowMenu() {
         Menu.removeAllOptions();
         Menu.showMenu();
-        assertEquals(menuHeading + "\n1) List Books\n2) List Movies\n"
+        assertEquals(menuHeading + "\n1) List Books\n2) List Movies\n\nEnter choice here: "
                 , outContent.toString());
     }
 
@@ -54,9 +54,9 @@ public class MenuTest {
         assertEquals( "List Books", Menu.getOptions().get(0));
         assertEquals( "List Movies", Menu.getOptions().get(1));
 
-        Menu.addOption("Check out book");
-        Menu.addOption("Return book");
-        Menu.addOption("Quit");
+        Menu.addOptionsToFile("Check out book");
+        Menu.addOptionsToFile("Return book");
+        Menu.addOptionsToFile("Quit");
 
         assertEquals( 5, Menu.getOptions().size());
         assertEquals( "List Books", Menu.getOptions().get(0));
@@ -72,11 +72,11 @@ public class MenuTest {
     public void testRemoveOneOption() {
         Menu.removeAllOptions();
         Menu.openProgram();
-        Menu.addOption("Check out book");
-        Menu.addOption("Return book");
-        Menu.addOption("Quit");
+        Menu.addOptionsToFile("Check out book");
+        Menu.addOptionsToFile("Return book");
+        Menu.addOptionsToFile("Quit");
 
-        Menu.removeOptions("Check out book");
+        Menu.removeOption("Check out book");
 
         assertEquals( 4, Menu.getOptions().size());
         assertEquals( "List Books", Menu.getOptions().get(0));
@@ -91,22 +91,20 @@ public class MenuTest {
     public void testRemoveAllOption() {
         Menu.removeAllOptions();
         Menu.openProgram();
-        Menu.addOption("Check out book");
-        Menu.addOption("Return book");
-        Menu.addOption("Quit");
+        Menu.addOptionsToFile("Check out book");
+        Menu.addOptionsToFile("Return book");
+        Menu.addOptionsToFile("Quit");
         
         Menu.removeAllOptions();
 
-        assertEquals( 2, Menu.getOptions().size());
-        assertEquals( "List Books", Menu.getOptions().get(0));
-        assertEquals( "List Movies", Menu.getOptions().get(1));
+        assertEquals( 0, Menu.getOptions().size());
     }
 
     @Test
     public void testAddOneOption() {
         Menu.removeAllOptions();
         Menu.openProgram();
-        Menu.addOption("Check out book");
+        Menu.addOptionsToFile("Check out book");
 
         assertEquals( 3, Menu.getOptions().size());
         assertEquals( "List Books", Menu.getOptions().get(0));
@@ -120,9 +118,9 @@ public class MenuTest {
     public void testAddMoreThanOneOption() {
         Menu.removeAllOptions();
         Menu.openProgram();
-        Menu.addOption("Check out book");
-        Menu.addOption("Return book");
-        Menu.addOption("Quit");
+        Menu.addOptionsToFile("Check out book");
+        Menu.addOptionsToFile("Return book");
+        Menu.addOptionsToFile("Quit");
 
         assertEquals( 5, Menu.getOptions().size());
         assertEquals( "List Books", Menu.getOptions().get(0));

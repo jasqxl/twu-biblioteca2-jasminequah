@@ -48,22 +48,23 @@ public class MovieTest {
     @Test
     public void testCheckOutMovieForEmptyMovie() {
         assertTrue(emptyMovie.getCheckOutStatus());
-        emptyMovie.checkOutItem();
+        emptyMovie.checkOutItem(2343805);
         assertTrue(emptyMovie.getCheckOutStatus());
     }
 
     @Test
     public void testCheckOutMovieForUnavailableMovie() {
         assertFalse(testMovieAttribute.getCheckOutStatus());
-        testMovieAttribute.checkOutItem();
+        testMovieAttribute.checkOutItem(9039486);
         assertFalse(testMovieAttribute.getCheckOutStatus());
     }
 
     @Test
     public void testCheckOutMovieForAvailableMovie() {
         assertTrue(testMovieDetail.getCheckOutStatus());
-        testMovieDetail.checkOutItem();
+        testMovieDetail.checkOutItem(3298634);
         assertFalse(testMovieDetail.getCheckOutStatus());
+        assertEquals(3298634, testMovieDetail.getBorrowerLibraryNumber());
     }
 
     @Test
@@ -78,6 +79,7 @@ public class MovieTest {
         assertFalse(testMovieAttribute.getCheckOutStatus());
         testMovieAttribute.returnItem();
         assertTrue(testMovieAttribute.getCheckOutStatus());
+        assertEquals(0, testMovieAttribute.getBorrowerLibraryNumber());
     }
 
     @Test

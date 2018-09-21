@@ -7,6 +7,7 @@ public class Book implements Media {
     private int publishYear;
     private boolean isAvailStatus = true;
     private String bookDetails;
+    private int libraryNumberOfBorrower = 0;
 
     public Book() {}
 
@@ -55,6 +56,10 @@ public class Book implements Media {
         return this.publishYear;
     }
 
+    public int getBorrowerLibraryNumber() {
+        return this.libraryNumberOfBorrower;
+    }
+
     public boolean getCheckOutStatus() {
         return this.isAvailStatus;
     }
@@ -67,15 +72,21 @@ public class Book implements Media {
         return (this.bookDetails != null) ? bookDetails : null;
     }
 
-    public void checkOutItem() {
+    public void checkOutItem(int libraryNumber) {
         if (this.title != null && this.author != null && this.publishYear != 0) {
             this.isAvailStatus = false;
+            this.libraryNumberOfBorrower = libraryNumber;
             formDetails();
         }
     }
 
     public void returnItem() {
         this.isAvailStatus = true;
+        this.libraryNumberOfBorrower = 0;
         formDetails();
+    }
+
+    public void recordBorrowerLibraryNumber(int libraryNumberOfBorrower) {
+        this.libraryNumberOfBorrower = libraryNumberOfBorrower;
     }
 }

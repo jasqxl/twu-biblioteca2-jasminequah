@@ -11,7 +11,7 @@ public interface MediaList <T extends Media> {
     public void removeAllItems();
 
 
-    public void checkOutAnItem(int serial);
+    public void checkOutAnItem(int serial, int libraryNumberOfBorrower);
     public void returnAnItem(String title, String creator, int year);
 
     public List<T> getList();

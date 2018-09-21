@@ -119,11 +119,11 @@ public class BookListTest {
         bookList.addToList(testBook7);
         bookList.addToList(testBook8);
 
-        bookList.checkOutAnItem(-3);
+        bookList.checkOutAnItem(-3, 3974029);
 
-        bookList.checkOutAnItem(0);
+        bookList.checkOutAnItem(0, 2376182);
 
-        bookList.checkOutAnItem(5);
+        bookList.checkOutAnItem(5, 8328372);
 
         assertEquals(unsuccessfulCheckOutMessage + "\n" +
                 unsuccessfulCheckOutMessage + "\n" +
@@ -146,11 +146,11 @@ public class BookListTest {
         bookList.addToList(testBook8);
 
         assertTrue(bookList.getList().get(1).getCheckOutStatus());
-        bookList.checkOutAnItem(1);
+        bookList.checkOutAnItem(1, 4796328);
         assertFalse(bookList.getList().get(1).getCheckOutStatus());
 
         assertTrue(bookList.getList().get(6).getCheckOutStatus());
-        bookList.checkOutAnItem(3);
+        bookList.checkOutAnItem(3, 2376282);
         assertFalse(bookList.getList().get(6).getCheckOutStatus());
 
         assertEquals(successfulCheckOutMessage + "\n" +
