@@ -2,68 +2,96 @@ package com.twu.biblioteca;
 
 import java.io.*;
 import java.util.*;
+
 public class BookList implements MediaList <Book> {
 
-    private String bookListHeader = "S/N  |" + String.format("%-30s", "Book Title") + "|" + String.format("%-20s", "Author") + "|Year";
+    private String bookListHeader = "S/N  |" + String.format("%-30s", "Book Title") + "|" + String.format("%-20s", "Author") + "|Year\n";
     private String successfulCheckOutMessage = "Thank you! Enjoy the book.\n";
     private String unsuccessfulCheckOutMessage = "That book is not available.\n";
     private String successfulReturnMessage = "Thank you for returning the book.\n";
     private String unsuccessfulReturnMessage = "That is not a valid book to return.\n";
     private String emptyBookListMessage = "There are no available books right now, please try again later..\n";
+    private String noCheckOutItemsMessage = "There are currently no checked out books.\n";
+    private String checkOutItemsMessage = "This is the list of books currently checked out:\n";
 
     private static String workingFilePath = System.getProperty("user.dir") + "/Book List.txt";
 
     private List<Book> bookList = new ArrayList<Book>();
+    private List<Book> availableBookList = new ArrayList<Book>();
+    private List<Book> unavailableBookList = new ArrayList<Book>();
     private List<String> allBookListDetail = new ArrayList<String>();
-
-    private String fileName = "Book List.txt";
-    private int[] bookSerialNumberArray;
-    private int numberOfAvailableBooks;
     private String listOfBooks;
 
-    public String listItems() {
+    private String fileName = "Book List.txt";
+
+    private int[] availableBooksArray;
+    private int[] unavailableBooksArray;
+    private int numberOfAvailableBooks;
+    private int numberOfUnavailableBooks;
+
+    public String listItems(List <Book> bookList) {
         listOfBooks = "";
+        availableBooksArray = null;
+        unavailableBooksArray = null;
+        availableBookList.clear();
+        unavailableBookList.clear();
         numberOfAvailableBooks = 0;
+        numberOfUnavailableBooks = 0;
 
         if (bookList.size() == 0) {
             retrieveList();
             if (bookList.size() == 0) listOfBooks = emptyBookListMessage;
         }
         else {
-            listOfBooks = listOfBooks + bookListHeader + "\n";
-            int bookSerialNumber = 1;
-            bookSerialNumberArray = new int[bookList.size()];
+            listOfBooks = listOfBooks + bookListHeader;
+            availableBooksArray = new int[bookList.size()];
+            unavailableBooksArray = new int[bookList.size()];
 
             for (int i = 0; i < bookList.size(); i++) {
                 if (bookList.get(i).getCheckOutStatus()) {
+                    availableBookList.add(bookList.get(i));
                     numberOfAvailableBooks++;
-                    bookSerialNumberArray[bookSerialNumber - 1] = i;
-                    listOfBooks = listOfBooks + String.format("%-5d", bookSerialNumber) + "|" + bookList.get(i).listDetail() + "\n";
-                    bookSerialNumber++;
+                    availableBooksArray[numberOfAvailableBooks - 1] = i;
+                    listOfBooks = listOfBooks + detailWithSerialNumber(numberOfAvailableBooks, bookList.get(i).listDetail());
+
+                }
+                else {
+                    unavailableBookList.add(bookList.get(i));
+                    numberOfUnavailableBooks++;
+                    unavailableBooksArray[numberOfUnavailableBooks - 1] = i;
                 }
             }
         }
         return listOfBooks;
     }
 
+    public String detailWithSerialNumber(int serial, String detail) {
+        return String.format("%-5d", serial) + "|" + detail;
+    }
+
+    public String detailWithSerialNumberAndAccountNumber(int serial, String detail, String accountNumber) {
+        return detailWithSerialNumber(serial, detail).trim() + " |" + accountNumber + "\n";
+    }
+
     private void retrieveList() {
         bookList.clear();
 
         File tmpDir = new File(workingFilePath);
+
         if (tmpDir.exists()) allBookListDetail = FileStream.readFromFile(fileName, allBookListDetail);
+
         for (int i = 0; i < allBookListDetail.size(); i++) {
             Book newBook = new Book(allBookListDetail.get(i));
             bookList.add(newBook);
             if (bookList.get(bookList.size()-1).getCheckOutStatus()) numberOfAvailableBooks++;
         }
 
-        bookSerialNumberArray = null;
-        if (!(allBookListDetail.size() == 0 && bookList.size() == 0)) listOfBooks = listItems();
+        if (!(allBookListDetail.size() == 0 && bookList.size() == 0)) listOfBooks = listItems(bookList);
     }
 
     public void addToList(Book newBook) {
         allBookListDetail.add(newBook.listAllDetail());
-        FileStream.appendItemToFile(fileName, allBookListDetail);
+        FileStream.writeToFile(fileName, allBookListDetail);
         retrieveList();
     }
 
@@ -84,57 +112,72 @@ public class BookList implements MediaList <Book> {
     public void removeAllItems() {
         bookList.clear();
         allBookListDetail.clear();
-        bookSerialNumberArray = null;
-        listOfBooks = null;
-        numberOfAvailableBooks = 0;
 
         FileStream.removeItemsFromFile(fileName, allBookListDetail);
+        retrieveList();
     }
 
     public void checkOutAnItem(int serial, String accountNumberOfBorrower) {
-        bookSerialNumberArray = null;
-        listOfBooks = listItems();
-
         if (serial < 1 || serial > numberOfAvailableBooks) {
             System.out.println(unsuccessfulCheckOutMessage);
         }
-        else if (bookList.get(bookSerialNumberArray[serial - 1]) != null &&
-                bookList.get(bookSerialNumberArray[serial - 1]).getCheckOutStatus()) {
-            bookList.get(bookSerialNumberArray[serial - 1]).checkOutItem(accountNumberOfBorrower);
+        else if (bookList.get(availableBooksArray[serial - 1]) != null &&
+                bookList.get(availableBooksArray[serial - 1]).getCheckOutStatus()) {
+            bookList.get(availableBooksArray[serial - 1]).checkOutItem(accountNumberOfBorrower);
+            allBookListDetail.set(availableBooksArray[serial - 1], bookList.get(availableBooksArray[serial - 1]).listAllDetail());
             System.out.println(successfulCheckOutMessage);
         }
-        else {
-            System.out.println(unsuccessfulCheckOutMessage);
-        }
+        else System.out.println(unsuccessfulCheckOutMessage);
 
-        bookSerialNumberArray = null;
-        listOfBooks = listItems();
+        listItems(bookList);
+        FileStream.writeToFile(fileName, allBookListDetail);
+        retrieveList();
     }
 
-    public void returnAnItem(String title, String creator, int publishYear) {
-        Boolean isReturned = false;
+    public String checkedOutItemList() {
+        String checkedOutItems = "";
 
-        for (int i = 0; i < bookList.size(); i++) {
-            if (bookList.get(i).getTitle().toLowerCase().indexOf(title.toLowerCase()) != -1 &&
-                    bookList.get(i).getCreator().toLowerCase().indexOf(creator.toLowerCase()) != -1 &&
-                    bookList.get(i).getReleaseYear() == publishYear &&
-                    bookList.get(i).getCheckOutStatus() == false) {
-                bookList.get(i).returnItem();
-                isReturned = true;
-                System.out.println(successfulReturnMessage);
-                i = bookList.size();
+        if (numberOfUnavailableBooks == 0) System.out.print(noCheckOutItemsMessage);
+        else {
+            System.out.println(checkOutItemsMessage);
+            checkedOutItems = bookListHeader.trim() + " |Borrowed by\n";
+
+            for (int i = 0; i < numberOfUnavailableBooks; i++) {
+                checkedOutItems = checkedOutItems +
+                        detailWithSerialNumberAndAccountNumber(i + 1,
+                                bookList.get(unavailableBooksArray[i]).listDetail(),
+                                bookList.get(unavailableBooksArray[i]).getBorrowerAccountNumber());
             }
         }
+        return checkedOutItems;
+    }
 
-        if (!isReturned) {
+    public void returnAnItem(int serial) {
+        if (serial < 1 || serial > numberOfUnavailableBooks) {
             System.out.println(unsuccessfulReturnMessage);
         }
+        else if (bookList.get(unavailableBooksArray[serial - 1]) != null &&
+                !bookList.get(unavailableBooksArray[serial - 1]).getCheckOutStatus()) {
+            bookList.get(unavailableBooksArray[serial - 1]).returnItem();
+            allBookListDetail.set(unavailableBooksArray[serial - 1], bookList.get(unavailableBooksArray[serial - 1]).listAllDetail());
+            System.out.println(successfulReturnMessage);
+        }
+        else System.out.println(unsuccessfulReturnMessage);
 
-        bookSerialNumberArray = null;
-        listOfBooks = listItems();
+        listItems(bookList);
+        FileStream.writeToFile(fileName, allBookListDetail);
+        retrieveList();
     }
 
     public List<Book> getList() {
         return bookList;
+    }
+
+    public List<Book> getAvailableList() {
+        return availableBookList;
+    }
+
+    public List<Book> getUnavailableList() {
+        return unavailableBookList;
     }
 }

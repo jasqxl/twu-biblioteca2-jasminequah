@@ -13,7 +13,7 @@ public class MenuTest {
 
     private static String welcomeMessage = "Welcome to Biblioteca :)\n";
     private static String goodbyeMessage = "Thank you for using Biblioteca..\n";
-    private static String menuHeading = "Please choose an action from the list below:";
+    private static String menuHeading = "Please choose an action from the list below:\n";
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;

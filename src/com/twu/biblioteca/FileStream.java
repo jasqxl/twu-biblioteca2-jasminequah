@@ -53,7 +53,7 @@ public class FileStream <T extends Media> {
             }
 
             if (listOfItems.size() == 0 && listItem.size() != 0) {
-                appendItemToFile(fileName, listItem);
+                writeToFile(fileName, listItem);
                 listOfItems = listItem;
             }
 
@@ -68,7 +68,7 @@ public class FileStream <T extends Media> {
         return listOfItems;
     }
 
-    public static void appendItemToFile(String fileName, List<String> newItem) {
+    public static void writeToFile(String fileName, List<String> newItem) {
         try (FileWriter fileWriter = new FileWriter(fileName, false);
              BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
              PrintWriter printWriter = new PrintWriter(bufferedWriter)) {

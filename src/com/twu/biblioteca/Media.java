@@ -5,7 +5,6 @@ public interface Media {
     public String getTitle();
     public String getCreator();
     public int getReleaseYear();
-    public String getBorrowerAccountNumber();
     public boolean getCheckOutStatus();
 
     public String listDetail();

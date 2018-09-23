@@ -8,15 +8,14 @@ public class Movie implements Media {
     private double rating;
     private boolean isAvailStatus = true;
     private String movieDetails;
-    private String accountNumberOfBorrower = "";
 
     public Movie() {}
 
-    public Movie(String title, String director, int releaseYear, boolean isAvailStatus, double rating) {
+    public Movie(String title, String director, int releaseYear, boolean availableStatus, double rating) {
         this.title = title;
         this.director = director;
         this.releaseYear = releaseYear;
-        this.isAvailStatus = isAvailStatus;
+        this.isAvailStatus = availableStatus;
         this.rating = rating;
         formDetails();
     }
@@ -27,25 +26,21 @@ public class Movie implements Media {
         this.releaseYear = Integer.parseInt(movieDetails.substring(52, 57).trim());
         this.rating = Double.parseDouble(movieDetails.substring(58, 65).trim());
 
-        if (movieDetails.substring(66, movieDetails.length()).toLowerCase().indexOf("unavailable") != -1) {
-            this.isAvailStatus = false;
-        }
-        else if(movieDetails.substring(66, movieDetails.length()).toLowerCase().indexOf("available") != -1)  {
-            this.isAvailStatus = true;
-        }
+        if (movieDetails.substring(66, movieDetails.length()).trim().toLowerCase().equals("unavailable")) this.isAvailStatus = false;
+        else if (movieDetails.substring(66, movieDetails.length()).trim().toLowerCase().equals("available")) this.isAvailStatus = true;
         formDetails();
     }
 
     private void formDetails() {
-        String movieStatus;
-        if (this.isAvailStatus) movieStatus = "Available";
-        else movieStatus = "Unavailable";
+        String availability = "";
+        if (this.isAvailStatus) availability = "available";
+        else availability = "unavailable";
         
-        this.movieDetails = String.format("%-30s", title) + "|" +
-                String.format("%-20s", director) + "|" +
-                String.format("%-5s", Integer.toString(releaseYear)) + "|" +
-                String.format("%-7s", Double.toString(rating)) + "|" +
-                movieStatus;
+        this.movieDetails = String.format("%-30s", this.title) + "|" +
+                String.format("%-20s", this.director) + "|" +
+                String.format("%-5s", Integer.toString(this.releaseYear)) + "|" +
+                String.format("%-7s", Double.toString(this.rating)) + "|" +
+                availability;
     }
 
     public String getTitle() {
@@ -60,37 +55,27 @@ public class Movie implements Media {
         return this.releaseYear;
     }
 
-    public String getBorrowerLibraryNumber() {
-        return this.accountNumberOfBorrower;
-    }
-
     public boolean getCheckOutStatus() {
         return this.isAvailStatus;
     }
 
     public String listDetail() {
-        return (this.movieDetails != null) ? movieDetails.substring(0, 65).trim() : null;
+        return (this.movieDetails != null) ? movieDetails.substring(0, 65).trim() + "\n": null;
     }
 
     public String listAllDetail() {
-        return (this.movieDetails != null) ? movieDetails : null;
+        return (this.movieDetails != null) ? movieDetails + "\n" : null;
     }
 
     public void checkOutItem(String accountNumber) {
         if (this.title != null && this.director != null && this.releaseYear != 0) {
             this.isAvailStatus = false;
-            this.accountNumberOfBorrower = accountNumber;
             formDetails();
         }
     }
 
     public void returnItem() {
         this.isAvailStatus = true;
-        this.accountNumberOfBorrower = "";
         formDetails();
-    }
-
-    public String getBorrowerAccountNumber() {
-        return this.accountNumberOfBorrower;
     }
 }

@@ -34,8 +34,8 @@ public class MovieTest {
     @Test
     public void testListMovieDetail() {
         assertEquals(null, emptyMovie.listDetail());
-        assertEquals("Lord of the Rings             |quah                |1994 |4.5", testMovieAttribute.listDetail());
-        assertEquals("Lord of the Rings 2           |Uncle               |2018 |6.0", testMovieDetail.listDetail());
+        assertEquals("Lord of the Rings             |quah                |1994 |4.5\n", testMovieAttribute.listDetail());
+        assertEquals("Lord of the Rings 2           |Uncle               |2018 |6.0\n", testMovieDetail.listDetail());
     }
 
     @Test
@@ -64,7 +64,6 @@ public class MovieTest {
         assertTrue(testMovieDetail.getCheckOutStatus());
         testMovieDetail.checkOutItem("er4-43w3");
         assertFalse(testMovieDetail.getCheckOutStatus());
-        assertEquals("er4-43w3", testMovieDetail.getBorrowerLibraryNumber());
     }
 
     @Test
@@ -79,7 +78,6 @@ public class MovieTest {
         assertFalse(testMovieAttribute.getCheckOutStatus());
         testMovieAttribute.returnItem();
         assertTrue(testMovieAttribute.getCheckOutStatus());
-        assertEquals("", testMovieAttribute.getBorrowerLibraryNumber());
     }
 
     @Test

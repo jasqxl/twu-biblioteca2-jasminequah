@@ -7,8 +7,8 @@ import static org.junit.Assert.*;
 public class BookTest {
 
     private Book emptyBook = new Book();
-    private Book testBookAttribute = new Book("Lord of the Rings", "ME", 1994, false);
-    private Book testBookDetail = new Book("Lord of the Rings 2           |Uncle               |2018 |Available");
+    private Book testBookAttribute = new Book("Lord of the Rings", "ME", 1994, "329-439j");
+    private Book testBookDetail = new Book("Lord of the Rings 2           |Uncle               |2018 |");
 
     @Test
     public void testGetTitle() {
@@ -34,8 +34,8 @@ public class BookTest {
     @Test
     public void testListBookDetail() {
         assertEquals(null, emptyBook.listDetail());
-        assertEquals("Lord of the Rings             |ME                  |1994", testBookAttribute.listDetail());
-        assertEquals("Lord of the Rings 2           |Uncle               |2018", testBookDetail.listDetail());
+        assertEquals("Lord of the Rings             |ME                  |1994\n", testBookAttribute.listDetail());
+        assertEquals("Lord of the Rings 2           |Uncle               |2018\n", testBookDetail.listDetail());
     }
 
     @Test

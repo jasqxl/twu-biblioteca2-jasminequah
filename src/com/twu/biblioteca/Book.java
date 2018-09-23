@@ -11,11 +11,12 @@ public class Book implements Media {
 
     public Book() {}
 
-    public Book(String title, String author, int publishYear, boolean isAvailStatus) {
+    public Book(String title, String author, int publishYear, String accountNumber) {
         this.title = title;
         this.author = author;
         this.publishYear = publishYear;
-        this.isAvailStatus = isAvailStatus;
+        this.accountNumberOfBorrower = accountNumber;
+        if (this.accountNumberOfBorrower.length() != 0) this.isAvailStatus = false;
         formDetails();
     }
 
@@ -24,24 +25,20 @@ public class Book implements Media {
         this.author = bookDetails.substring(31, 51).trim();
         this.publishYear = Integer.parseInt(bookDetails.substring(52, 57).trim());
 
-        if (bookDetails.substring(58, bookDetails.length()).toLowerCase().indexOf("unavailable") != -1) {
+        if (bookDetails.substring(58, bookDetails.length()).trim().length() > 0) {
             this.isAvailStatus = false;
+            this.accountNumberOfBorrower = bookDetails.substring(58, bookDetails.length()).trim();
         }
-        else if(bookDetails.substring(58, bookDetails.length()).toLowerCase().indexOf("available") != -1)  {
-            this.isAvailStatus = true;
-        }
+        else this.isAvailStatus = true;
+
         formDetails();
     }
 
     private void formDetails() {
-        String bookStatus;
-        if (this.isAvailStatus) bookStatus = "Available";
-        else bookStatus = "Unavailable";
-
-        this.bookDetails = String.format("%-30s", title) + "|" +
-                String.format("%-20s", author) + "|" +
-                String.format("%-5s", Integer.toString(publishYear)) + "|" +
-                bookStatus;
+        this.bookDetails = String.format("%-30s", this.title) + "|" +
+                String.format("%-20s", this.author) + "|" +
+                String.format("%-5s", Integer.toString(this.publishYear)) + "|" +
+                this.accountNumberOfBorrower;
     }
 
     public String getTitle() {
@@ -65,11 +62,11 @@ public class Book implements Media {
     }
 
     public String listDetail() {
-        return (this.bookDetails != null) ? bookDetails.substring(0, 57).trim() : null;
+        return (this.bookDetails != null) ? bookDetails.substring(0, 57).trim() + "\n" : null;
     }
 
     public String listAllDetail() {
-        return (this.bookDetails != null) ? bookDetails : null;
+        return (this.bookDetails != null) ? bookDetails + "\n" : null;
     }
 
     public void checkOutItem(String accountNumber) {

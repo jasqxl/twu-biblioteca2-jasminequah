@@ -11,16 +11,16 @@ import static org.junit.Assert.*;
 
 public class MovieListTest {
 
-    private static String movieListHeader = "S/N  |" + String.format("%-30s", "Movie Title") + "|" + String.format("%-20s", "Director") + "|Year |Rating";
+    private static String movieListHeader = "S/N  |" + String.format("%-30s", "Movie Title") + "|" + String.format("%-20s", "Director") + "|Year |Rating\n";
     private static String successfulCheckOutMessage = "Thank you! Enjoy the movie.\n";
     private static String unsuccessfulCheckOutMessage = "That movie is not available.\n";
     private static String successfulReturnMessage = "Thank you for returning the movie.\n";
     private static String unsuccessfulReturnMessage = "That is not a valid movie to return.\n";
 
     private Movie testMovie1 = new Movie("Lord of the Rings", "ME", 1994, false,7.5);
-    private Movie testMovie2 = new Movie("Hang of the Rings 2           |Uncle               |2018 |10     |available");
+    private Movie testMovie2 = new Movie("Hang of the Rings 2           |Uncle               |2018 |10     |Available");
     private Movie testMovie3 = new Movie("Movie to handling bruh", "bot", 1967, true,4.4);
-    private Movie testMovie4 = new Movie("Lord of the Rings 2           |handphone           |2004 |5.23   |Unavailable");
+    private Movie testMovie4 = new Movie("Lord of the Rings 2           |handphone           |2004 |5.23   |unavailable");
     private Movie testMovie5 = new Movie("King an lah Rings", "kenny", 1994, false, 9.5);
     private Movie testMovie6 = new Movie("osfd of the Rings 2           |Uncle               |2018 |6.8    |available");
     private Movie testMovie7 = new Movie("Movie sfv hanling bruh", "quah xue", 2012, true, 7.0);
@@ -94,6 +94,7 @@ public class MovieListTest {
     @Test
     public void testListMovies() {
         movieList.removeAllItems();
+
         movieList.addToList(testMovie1);
         movieList.addToList(testMovie2);
         movieList.addToList(testMovie3);
@@ -101,13 +102,14 @@ public class MovieListTest {
 
         assertEquals(4, movieList.getList().size());
         assertEquals(true, movieList.getList().get(2).getCheckOutStatus());
+        assertEquals(false, movieList.getList().get(3).getCheckOutStatus());
 
-        assertEquals(movieListHeader + "\n" +
+        assertEquals(movieListHeader +
                 //"Lord of the Rings             |ME                  |1994 |7.5\n" +
                 "1    |Hang of the Rings 2           |Uncle               |2018 |10.0\n" +
                 "2    |Movie to handling bruh        |bot                 |1967 |4.4\n"
                 //"Lord of the Rings 2           |handphone           |2004 |5.23\n"
-                , movieList.listItems());
+                , movieList.listItems(movieList.getList()));
 
         movieList.removeAllItems();
     }
@@ -175,11 +177,12 @@ public class MovieListTest {
         movieList.addToList(testMovie5);
         movieList.addToList(testMovie8);
 
-        movieList.returnAnItem(testMovie6.getTitle(), testMovie6.getCreator(), testMovie6.getReleaseYear());
+        assertEquals(4,movieList.getUnavailableList().size());
 
-        assertTrue(movieList.getList().get(1).getCheckOutStatus());
-        movieList.returnAnItem(testMovie2.getTitle(), testMovie2.getCreator(), testMovie2.getReleaseYear());
-        assertTrue(movieList.getList().get(1).getCheckOutStatus());
+        movieList.returnAnItem(0);
+        movieList.returnAnItem(5);
+
+        assertEquals(4,movieList.getUnavailableList().size());
 
         assertEquals(unsuccessfulReturnMessage + "\n" +
                 unsuccessfulReturnMessage + "\n"
@@ -198,9 +201,9 @@ public class MovieListTest {
         movieList.addToList(testMovie5);
         movieList.addToList(testMovie8);
 
-        assertFalse(movieList.getList().get(3).getCheckOutStatus());
-        movieList.returnAnItem(testMovie4.getTitle(), testMovie4.getCreator(), testMovie4.getReleaseYear());
-        assertTrue(movieList.getList().get(3).getCheckOutStatus());
+        assertEquals(4, movieList.getUnavailableList().size());
+        movieList.returnAnItem(4);
+        assertEquals(3, movieList.getUnavailableList().size());
 
         assertEquals(successfulReturnMessage + "\n", outContent.toString());
 

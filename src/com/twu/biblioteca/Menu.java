@@ -7,7 +7,7 @@ public class Menu {
 
     private static String welcomeMessage = "Welcome to Biblioteca :)\n";
     private static String goodbyeMessage = "Thank you for using Biblioteca..\n";
-    private static String menuHeading = "Please choose an action from the list below:";
+    private static String menuHeading = "Please choose an action from the list below:\n";
 
     private static List<String> necessaryOptions = new ArrayList<String>();
     private static List<String> actionOptions = new ArrayList<String>();
@@ -19,6 +19,7 @@ public class Menu {
         necessaryOptions.clear();
         necessaryOptions.add("List Books");
         necessaryOptions.add("List Movies");
+        options = necessaryOptions;
         actionOptions.clear();
         actionOptions.add("Check out item");
         actionOptions.add("Return item");
@@ -37,11 +38,11 @@ public class Menu {
         if (tmpDir.exists() && options.size() == 0) options = FileStream.readFromFile(fileName, necessaryOptions);
         else if (!tmpDir.exists()) {
             options = necessaryOptions;
-            FileStream.appendItemToFile(fileName, necessaryOptions);
+            FileStream.writeToFile(fileName, necessaryOptions);
         }
 
         printMenu (options);
-        FileStream.appendItemToFile(fileName, options);
+        FileStream.writeToFile(fileName, options);
         System.out.print("\nEnter number of choice here: ");
     }
 
@@ -59,7 +60,7 @@ public class Menu {
     public static void addOptionsToFile(String newOption) {
         if (newOption.length() != 0) {
             options.add(newOption);
-            FileStream.appendItemToFile(fileName, options);
+            FileStream.writeToFile(fileName, options);
         }
     }
 
