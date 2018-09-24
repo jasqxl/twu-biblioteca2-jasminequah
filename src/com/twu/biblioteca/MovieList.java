@@ -11,7 +11,8 @@ public class MovieList implements MediaList <Movie> {
     private String unsuccessfulCheckOutMessage = "That movie is not available.\n";
     private String successfulReturnMessage = "Thank you for returning the movie.\n";
     private String unsuccessfulReturnMessage = "That is not a valid movie to return.\n";
-    private String emptyMovieListMessage = "There are no available movies right now, please try again later..\n";
+    private String emptyAvailableMovieListMessage = "There are no available movies right now, please try again later..\n";
+    private String emptyUnavailableMovieListMessage = "All movies are returned ^^\n";
 
     private static String workingFilePath = System.getProperty("user.dir") + "/Movie List.txt";
 
@@ -38,7 +39,7 @@ public class MovieList implements MediaList <Movie> {
 
         if (movieList.size() == 0) {
             retrieveList();
-            if (movieList.size() == 0) listOfMovies = emptyMovieListMessage;
+            if (movieList.size() == 0) listOfMovies = emptyAvailableMovieListMessage;
         } else {
             listOfMovies = listOfMovies + movieListHeader;
             availableMovieArray = new int[movieList.size()];
@@ -57,10 +58,10 @@ public class MovieList implements MediaList <Movie> {
                     unavailableMoviesArray[numberOfUnavailableMovies - 1] = i;
                 }
             }
+            if (numberOfAvailableMovies == 0) listOfMovies = emptyAvailableMovieListMessage;
         }
         return listOfMovies;
     }
-
 
     public String detailWithSerialNumber(int serial, String detail) {
         return String.format("%-5d", serial) + "|" + detail;
@@ -145,6 +146,17 @@ public class MovieList implements MediaList <Movie> {
         listItems(movieList);
         FileStream.writeToFile(fileName, allMovieListDetail);
         retrieveList();
+    }
+
+    public void printList(List<Movie> list) {
+        if (list.size() == 0) System.out.println(emptyUnavailableMovieListMessage);
+        else {
+            System.out.print("\n" + movieListHeader);
+            for (int i = 0; i < list.size(); i++) {
+                System.out.print(detailWithSerialNumber(i + 1, list.get(i).listDetail()));
+            }
+            System.out.print("\n");
+        }
     }
 
     public List<Movie> getList() {

@@ -29,7 +29,7 @@ public class MenuTest {
         Menu.openProgram();
         Menu.showMenu();
         assertEquals(welcomeMessage + "\n" + menuHeading + 
-                "\n1) List Books\n2) List Movies\n\nEnter number of choice here: ", outContent.toString());
+                "\n1) List Books\n2) List Movies\n\nEnter choice: ", outContent.toString());
     }
 
     @Test

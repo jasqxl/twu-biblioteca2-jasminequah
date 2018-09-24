@@ -62,7 +62,7 @@ public class BookListTest {
         assertEquals("bot", bookList.getList().get(1).getCreator());
         assertEquals(1967, bookList.getList().get(1).getReleaseYear());
 
-        //bookList.removeAllItems();
+        bookList.removeAllItems();
     }
 
     @Test
@@ -190,7 +190,7 @@ public class BookListTest {
                 unsuccessfulCheckOutMessage + "\n"
                 , outContent.toString());
 
-        bookList.removeAllItems();
+        //bookList.removeAllItems();
     }
 
     @Test
@@ -231,12 +231,10 @@ public class BookListTest {
         bookList.addToList(testBook8);
 
         assertEquals(4,bookList.getUnavailableList().size());
-
         bookList.returnAnItem(5);
         bookList.returnAnItem(0);
-
         assertEquals(4,bookList.getUnavailableList().size());
-        
+
         assertEquals(unsuccessfulReturnMessage + "\n" +
                 unsuccessfulReturnMessage + "\n"
                 , outContent.toString());
@@ -255,11 +253,8 @@ public class BookListTest {
         bookList.addToList(testBook8);
 
         assertEquals(4, bookList.getUnavailableList().size());
-
         bookList.returnAnItem(4);
-
         assertEquals(3, bookList.getUnavailableList().size());
-
         assertEquals(successfulReturnMessage + "\n", outContent.toString());
 
         bookList.removeAllItems();

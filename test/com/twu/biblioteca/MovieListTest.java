@@ -65,7 +65,7 @@ public class MovieListTest {
         assertEquals("bot", movieList.getList().get(1).getCreator());
         assertEquals(1967, movieList.getList().get(1).getReleaseYear());
 
-        //movieList.removeAllItems();
+        movieList.removeAllItems();
     }
 
     @Test
@@ -137,7 +137,7 @@ public class MovieListTest {
                 unsuccessfulCheckOutMessage + "\n"
                 , outContent.toString());
 
-        movieList.removeAllItems();
+        //movieList.removeAllItems();
     }
 
     @Test

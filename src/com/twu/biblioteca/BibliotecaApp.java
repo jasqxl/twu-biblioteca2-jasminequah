@@ -5,8 +5,8 @@ import java.util.*;
 public class BibliotecaApp {
 
     private static String loginMessage = "To check out or return, please login first.\n";
-    private static String checkOutMessage = "Please enter serial number to check out\n";
-    private static String returnMessage = "Please enter serial number to return\n";
+    private static String checkOutMessage = "Please enter index of item to check out: ";
+    private static String returnMessage = "Please enter index number of item to return: ";
     private static String enterAccountNumberMessage = "Account number: ";
     private static String enterPasswordMessage = "Password: ";
     private static String invalidMenuOptionMessage = "Select a valid option!\n";
@@ -19,20 +19,26 @@ public class BibliotecaApp {
 
     public static void main(String[] args) {
         Menu.openProgram();
-        loopUserInputUntilQuit(Menu.getMenu());
+        loopUserInputUntilQuit(Menu.getMenu(), "");
         Menu.closeProgram();
     }
 
-    private static void loopUserInputUntilQuit(List<String> menu) {
+    private static void loopUserInputUntilQuit(List<String> menu, String whatMedia) {
         do {
             if (menu.get(0).equals("List Books")) Menu.showMenu();
-            else Menu.showActionMenu();
+            else if(menu.get(0).equals("Check out item")) {
+                System.out.println(actionMessage);
+                Menu.showActionMenu();
+            }
 
-            input = Integer.toString(checkUserChoice(getUserInput(), menu));
+            input = Integer.toString(checkUserChoice(getUserInput(), menu.size()));
 
             if (Integer.parseInt(input) > 0) {
                 if (menu.get(0).equals("List Books")) doAction(input, menu);
-                else if (menu.get(0).equals("Check out item")) doUserAction(input, menu);
+                else if (menu.get(0).equals("Check out item")) {
+                    doUserAction(input, menu, whatMedia);
+                    return;
+                }
             }
         } while (Integer.parseInt(input) != 0);
     }
@@ -42,9 +48,9 @@ public class BibliotecaApp {
         return reader.nextLine().trim();
     }
 
-    public static int checkUserChoice(String userChoice, List<String> options) {
-        if (parseOption(userChoice, options) == 0) return 0;
-        if (parseOption(userChoice, options) != -1) return parseOption(userChoice, options);
+    public static int checkUserChoice(String userChoice, int sizeOfList) {
+        if (parseOption(userChoice, sizeOfList) == 0) return 0;
+        if (parseOption(userChoice, sizeOfList) != -1) return parseOption(userChoice, sizeOfList);
         else invalidOptionSelected();
         return -1;
     }
@@ -53,10 +59,10 @@ public class BibliotecaApp {
         System.out.println(invalidMenuOptionMessage);
     }
 
-    private static int parseOption(String userChoice, List<String> options) {
+    private static int parseOption(String userChoice, int sizeOfList) {
         if (isQuit(userChoice)) return 0;
         if (!isNumeric(userChoice)) return -1;
-        if (isOptionValid(userChoice, options)) return Integer.parseInt(userChoice);
+        if (isOptionValid(userChoice, sizeOfList)) return Integer.parseInt(userChoice);
         return -1;
     }
 
@@ -72,9 +78,10 @@ public class BibliotecaApp {
         return true;
     }
 
-    private static boolean isOptionValid(String userChoice, List<String> options) {
-        if (Integer.parseInt(userChoice) < 1 || Integer.parseInt(userChoice) > options.size()) return false;
-        return (options.get(Integer.parseInt(userChoice) - 1) != null) ? true : false;
+    private static boolean isOptionValid(String userChoice, int sizeOfList) {
+        if (userChoice.trim().length() == 0) return false;
+        if (Integer.parseInt(userChoice) < 1 || Integer.parseInt(userChoice) > sizeOfList) return false;
+        return true;
     }
 
     private static void userLoginForListBook() {
@@ -84,7 +91,7 @@ public class BibliotecaApp {
         System.out.println("Account Type: " + accountDetails.get(5) + "\nWelcome back, " + accountDetails.get(0));
         if (accountDetails.get(5).equals("User")) {
             System.out.println(getUserInfo());
-            loopUserInputUntilQuit(Menu.getActionMenu());
+            loopUserInputUntilQuit(Menu.getActionMenu(), "book");
         }
         else System.out.println(getCheckedOutBook());
     }
@@ -112,22 +119,57 @@ public class BibliotecaApp {
 
     public static void doAction(String userChoice, List<String> options) {
         if (options.get(Integer.parseInt(userChoice) - 1).equals("List Books")) {
-            System.out.println(bookList.listItems(bookList.getList()));
+            System.out.println("\n" + bookList.listItems(bookList.getList()));
             userLoginForListBook();
+
         }
         else if (options.get(Integer.parseInt(userChoice) - 1).equals("List Movies")) {
-            System.out.println(movieList.listItems(movieList.getList()));
-            loopUserInputUntilQuit(Menu.getActionMenu());
+            System.out.println("\n" + movieList.listItems(movieList.getList()));
+            loopUserInputUntilQuit(Menu.getActionMenu(), "movie");
         }
     }
 
-    public static void doUserAction(String userChoice, List<String> options) {
-        System.out.println(actionMessage);
+    public static void doUserAction(String userChoice, List<String> options, String whatMedia) {
         if (options.get(Integer.parseInt(userChoice) - 1).equals("Check out item")) {
-
+            checkOut(checkOutMessage, whatMedia, bookList, movieList);
         }
         else if (options.get(Integer.parseInt(userChoice) - 1).equals("Return item")) {
-
+            returnItem(returnMessage, whatMedia, bookList, movieList);
         }
+    }
+
+    private static void checkOut(String message, String whatMedia, BookList bookList, MovieList movieList) {
+        do {
+            if (whatMedia.equals("book") && bookList.getAvailableList().size() != 0) {
+                System.out.print(message);
+                input = Integer.toString(checkUserChoice(getUserInput(), bookList.getAvailableList().size()));
+            }
+            else if (whatMedia.equals("movie") && movieList.getAvailableList().size() != 0) {
+                System.out.print(message);
+                input = Integer.toString(checkUserChoice(getUserInput(), movieList.getAvailableList().size()));
+            }
+
+            if (Integer.parseInt(input) > 0) {
+                if (whatMedia.equals("book")) bookList.checkOutAnItem(Integer.parseInt(input), accountDetails.get(3));
+                else if (whatMedia.equals("movie")) movieList.checkOutAnItem(Integer.parseInt(input), "");
+            }
+        } while (Integer.parseInt(input) < 0);
+    }
+
+    private static void returnItem(String message, String whatMedia, BookList bookList, MovieList movieList) {
+        do {
+            if (whatMedia.equals("book")) bookList.printList(bookList.getUnavailableList());
+            else if (whatMedia.equals("movie")) movieList.printList(movieList.getUnavailableList());
+
+            if (movieList.getUnavailableList().size() > 0) {
+                System.out.print(message);
+                input = Integer.toString(checkUserChoice(getUserInput(), movieList.getUnavailableList().size()));
+
+                if (Integer.parseInt(input) > 0) {
+                    if (whatMedia.equals("book")) bookList.returnAnItem(Integer.parseInt(input));
+                    else if (whatMedia.equals("movie")) movieList.returnAnItem(Integer.parseInt(input));
+                }
+            }
+        } while (Integer.parseInt(input) < 0);
     }
 }

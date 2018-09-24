@@ -1,22 +1,16 @@
 package com.twu.biblioteca;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.twu.biblioteca.BibliotecaApp.checkUserChoice;
-import static org.junit.Assert.assertEquals;
+import org.junit.*;
+import java.io.*;
+import java.util.*;
+import static com.twu.biblioteca.BibliotecaApp.*;
+import static org.junit.Assert.*;
 
 public class BibliotecaAppTest {
 
-    private static String invalidMenuOptionMessage = "Select a valid option!\n";
+    private String invalidMenuOptionMessage = "Select a valid option!\n";
 
-    private static List<String> options = new ArrayList<String>();
+    private List<String> options = new ArrayList<String>();
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
@@ -33,12 +27,12 @@ public class BibliotecaAppTest {
         options.add("Check out books");
         options.add("Return book");
 
-        checkUserChoice("quit", options);
+        checkUserChoice("quit", options.size());
         assertEquals("", outContent.toString());
 
         outContent.reset();
 
-        checkUserChoice("Quit", options);
+        checkUserChoice("Quit", options.size());
         assertEquals("", outContent.toString());
     }
 
@@ -49,17 +43,17 @@ public class BibliotecaAppTest {
         options.add("Check out books");
         options.add("Return book");
 
-        checkUserChoice("0", options);
+        checkUserChoice("0", options.size());
         assertEquals(invalidMenuOptionMessage + "\n", outContent.toString());
 
         outContent.reset();
 
-        checkUserChoice("dg f", options);
+        checkUserChoice("dg f", options.size());
         assertEquals(invalidMenuOptionMessage + "\n", outContent.toString());
 
         outContent.reset();
 
-        checkUserChoice("-2", options);
+        checkUserChoice("-2", options.size());
         assertEquals(invalidMenuOptionMessage + "\n", outContent.toString());
     }
 
@@ -70,12 +64,12 @@ public class BibliotecaAppTest {
         options.add("Check out books");
         options.add("Return book");
 
-        checkUserChoice("2", options);
+        checkUserChoice("2", options.size());
         assertEquals("", outContent.toString());
 
         outContent.reset();
 
-        checkUserChoice("3", options);
+        checkUserChoice("3", options.size());
         assertEquals("", outContent.toString());
     }
 

@@ -10,7 +10,8 @@ public class BookList implements MediaList <Book> {
     private String unsuccessfulCheckOutMessage = "That book is not available.\n";
     private String successfulReturnMessage = "Thank you for returning the book.\n";
     private String unsuccessfulReturnMessage = "That is not a valid book to return.\n";
-    private String emptyBookListMessage = "There are no available books right now, please try again later..\n";
+    private String emptyAvailableBookListMessage = "There are no available books right now, please try again later..\n";
+    private String emptyUnavailableBookListMessage = "All books are returned ^^\n";
     private String noCheckOutItemsMessage = "There are currently no checked out books.\n";
     private String checkOutItemsMessage = "This is the list of books currently checked out:\n";
 
@@ -40,7 +41,7 @@ public class BookList implements MediaList <Book> {
 
         if (bookList.size() == 0) {
             retrieveList();
-            if (bookList.size() == 0) listOfBooks = emptyBookListMessage;
+            if (bookList.size() == 0) listOfBooks = emptyAvailableBookListMessage;
         }
         else {
             listOfBooks = listOfBooks + bookListHeader;
@@ -61,6 +62,7 @@ public class BookList implements MediaList <Book> {
                     unavailableBooksArray[numberOfUnavailableBooks - 1] = i;
                 }
             }
+            if (numberOfAvailableBooks == 0) listOfBooks = emptyAvailableBookListMessage;
         }
         return listOfBooks;
     }
@@ -145,8 +147,8 @@ public class BookList implements MediaList <Book> {
             for (int i = 0; i < numberOfUnavailableBooks; i++) {
                 checkedOutItems = checkedOutItems +
                         detailWithSerialNumberAndAccountNumber(i + 1,
-                                bookList.get(unavailableBooksArray[i]).listDetail(),
-                                bookList.get(unavailableBooksArray[i]).getBorrowerAccountNumber());
+                        bookList.get(unavailableBooksArray[i]).listDetail(),
+                        bookList.get(unavailableBooksArray[i]).getBorrowerAccountNumber());
             }
         }
         return checkedOutItems;
@@ -167,6 +169,17 @@ public class BookList implements MediaList <Book> {
         listItems(bookList);
         FileStream.writeToFile(fileName, allBookListDetail);
         retrieveList();
+    }
+
+    public void printList(List<Book> list) {
+        if (list.size() == 0) System.out.println(emptyUnavailableBookListMessage);
+        else {
+            System.out.print("\n" + bookListHeader);
+            for (int i = 0; i < list.size(); i++) {
+                System.out.print(detailWithSerialNumber(i + 1, list.get(i).listDetail()));
+            }
+            System.out.print("\n");
+        }
     }
 
     public List<Book> getList() {

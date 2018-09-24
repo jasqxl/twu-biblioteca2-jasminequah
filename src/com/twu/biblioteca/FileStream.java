@@ -17,11 +17,11 @@ public class FileStream <T extends Media> {
             //Assuming no duplicate
             while((line = bufferedReader.readLine()) != null) {
                 if (line.length() != 0) {
-                    accountDetails.add(line.substring(0, 20).trim());
-                    accountDetails.add(line.substring(21, 61).trim());
-                    accountDetails.add(line.substring(62, 70).trim());
-                    accountDetails.add(line.substring(71, 79).trim());
-                    accountDetails.add(line.substring(80, line.length()).trim());
+                    accountDetails.add(line.substring(0, 20).trim()); //Name
+                    accountDetails.add(line.substring(21, 61).trim());  //Email
+                    accountDetails.add(line.substring(62, 70).trim()); //Mobile
+                    accountDetails.add(line.substring(71, 79).trim()); //Account Number
+                    accountDetails.add(line.substring(80, line.length()).trim()); //Password
                 }
 
                 if (accountNumber.equals(accountDetails.get(3)) && password.equals(accountDetails.get(4))) {
