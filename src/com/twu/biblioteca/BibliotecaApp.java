@@ -88,12 +88,13 @@ public class BibliotecaApp {
         System.out.println(loginMessage);
         login();
 
-        System.out.println("Account Type: " + accountDetails.get(5) + "\nWelcome back, " + accountDetails.get(0));
-        if (accountDetails.get(5).equals("User")) {
-            System.out.println(getUserInfo());
-            loopUserInputUntilQuit(Menu.getActionMenu(), "book");
+        if (accountDetails.size() == 6) {
+            System.out.println("Account Type: " + accountDetails.get(5) + "\nWelcome back, " + accountDetails.get(0));
+            if (accountDetails.get(5).equals("User")) {
+                System.out.println(getUserInfo());
+                loopUserInputUntilQuit(Menu.getActionMenu(), "book");
+            } else System.out.println(getCheckedOutBook());
         }
-        else System.out.println(getCheckedOutBook());
     }
 
     private static void login () {
@@ -105,7 +106,6 @@ public class BibliotecaApp {
         password = getUserInput();
 
         accountDetails = Account.loginAccount(accountNumber, password);
-        if (accountDetails.size() != 6) login();
     }
 
     private static String getUserInfo() {
@@ -121,7 +121,6 @@ public class BibliotecaApp {
         if (options.get(Integer.parseInt(userChoice) - 1).equals("List Books")) {
             System.out.println("\n" + bookList.listItems(bookList.getList()));
             userLoginForListBook();
-
         }
         else if (options.get(Integer.parseInt(userChoice) - 1).equals("List Movies")) {
             System.out.println("\n" + movieList.listItems(movieList.getList()));
@@ -139,6 +138,7 @@ public class BibliotecaApp {
     }
 
     private static void checkOut(String message, String whatMedia, BookList bookList, MovieList movieList) {
+        boolean emptyList = false;
         do {
             if (whatMedia.equals("book") && bookList.getAvailableList().size() != 0) {
                 System.out.print(message);
@@ -148,8 +148,12 @@ public class BibliotecaApp {
                 System.out.print(message);
                 input = Integer.toString(checkUserChoice(getUserInput(), movieList.getAvailableList().size()));
             }
+            else emptyList = true;
 
-            if (Integer.parseInt(input) > 0) {
+            if (emptyList && whatMedia.equals("book")) System.out.println(bookList.listItems(bookList.getList()));
+            else if (emptyList && whatMedia.equals("movie")) System.out.println(movieList.listItems(movieList.getList()));
+
+            if (Integer.parseInt(input) > 0 && !emptyList) {
                 if (whatMedia.equals("book")) bookList.checkOutAnItem(Integer.parseInt(input), accountDetails.get(3));
                 else if (whatMedia.equals("movie")) movieList.checkOutAnItem(Integer.parseInt(input), "");
             }
@@ -157,18 +161,25 @@ public class BibliotecaApp {
     }
 
     private static void returnItem(String message, String whatMedia, BookList bookList, MovieList movieList) {
+        boolean emptyList = false;
         do {
             if (whatMedia.equals("book")) bookList.printList(bookList.getUnavailableList());
             else if (whatMedia.equals("movie")) movieList.printList(movieList.getUnavailableList());
 
-            if (movieList.getUnavailableList().size() > 0) {
+            if (whatMedia.equals("book") && bookList.getUnavailableList().size() > 0) {
+                System.out.print(message);
+                input = Integer.toString(checkUserChoice(getUserInput(), bookList.getUnavailableList().size()));
+            }
+            else if (whatMedia.equals("movie") && movieList.getUnavailableList().size() > 0) {
                 System.out.print(message);
                 input = Integer.toString(checkUserChoice(getUserInput(), movieList.getUnavailableList().size()));
+            }
 
-                if (Integer.parseInt(input) > 0) {
-                    if (whatMedia.equals("book")) bookList.returnAnItem(Integer.parseInt(input));
-                    else if (whatMedia.equals("movie")) movieList.returnAnItem(Integer.parseInt(input));
-                }
+            else emptyList = true;
+
+            if (Integer.parseInt(input) > 0 && !emptyList) {
+                if (whatMedia.equals("book")) bookList.returnAnItem(Integer.parseInt(input));
+                else if (whatMedia.equals("movie")) movieList.returnAnItem(Integer.parseInt(input));
             }
         } while (Integer.parseInt(input) < 0);
     }
